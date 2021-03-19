@@ -145,6 +145,8 @@ public class Cloudlet {
 	/** The utilization of bw model. */
 	private UtilizationModel utilizationModelBw;
 
+	private int priority;
+
 	// Data cloudlet
 	/** The required files. */
 	private List<String> requiredFiles = null;   // list of required filenames
@@ -450,6 +452,13 @@ public class Cloudlet {
 		this.cloudletLength = cloudletLength;
 		return true;
 	}
+	public void setCloudletPriority(int a) {
+		this.priority =a;
+	}
+	public int getCloudletPriority() {
+		return this.priority;
+	}
+
 
 	/**
 	 * Sets the network service level for sending this cloudlet over a network.

@@ -20,41 +20,43 @@ import org.workflowsim.utils.OverheadParameters;
 import org.workflowsim.utils.Parameters;
 import org.workflowsim.utils.ReplicaCatalog;
 
-public class WaterDropletPlanning extends WorkflowSimBasicExample1{
-	protected static List<CondorVM> createVM(int userId, int vms) {
+public class WaterDropletPlanning extends WorkflowSimBasicExample1 {
+    protected static List<CondorVM> createVM(int userId, int vms) {
 
-        //Creates a container to store VMs. This list is passed to the broker later
+        // Creates a container to store VMs. This list is passed to the broker later
         LinkedList<CondorVM> list = new LinkedList<>();
 
-        //VM Parameters
-        long size = 10000; //image size (MB)
-        int ram = 512; //vm memory (MB)
+        // VM Parameters
+        long size = 10000; // image size (MB)
+        int ram = 512; // vm memory (MB)
         int mips = 1000;
         long bw = 1000;
-        int pesNumber = 1; //number of cpus
-        String vmm = "Xen"; //VMM name
+        int pesNumber = 1; // number of cpus
+        String vmm = "Xen"; // VMM name
 
-        //create VMs
+        // create VMs
         CondorVM[] vm = new CondorVM[vms];
         Random bwRandom = new Random(System.currentTimeMillis());
         for (int i = 0; i < vms; i++) {
             double ratio = bwRandom.nextDouble();
-            vm[i] = new CondorVM(i, userId, mips * ratio, pesNumber, ram, (long) (bw * ratio), size, vmm, new CloudletSchedulerSpaceShared());
+            vm[i] = new CondorVM(i, userId, mips * (i + 1), pesNumber, ram, (long) (bw * (i + 1)), size, vmm,
+                    new CloudletSchedulerSpaceShared());
             list.add(vm[i]);
         }
         return list;
     }
-	public static void main(String[] args) {
+
+    public static void main(String[] args) {
 
         try {
-            // First step: Initialize the WorkflowSim package. 
+            // First step: Initialize the WorkflowSim package.
 
             /**
-             * However, the exact number of vms may not necessarily be vmNum If
-             * the data center or the host doesn't have sufficient resources the
-             * exact vmNum would be smaller than that. Take care.
+             * However, the exact number of vms may not necessarily be vmNum If the data
+             * center or the host doesn't have sufficient resources the exact vmNum would be
+             * smaller than that. Take care.
              */
-            int vmNum = 5;//number of vms;
+            int vmNum = 5;// number of vms;
             /**
              * Should change this based on real physical path
              */
@@ -67,11 +69,11 @@ public class WaterDropletPlanning extends WorkflowSimBasicExample1{
             }
 
             /**
-             * Since we are using HEFT planning algorithm, the scheduling
-             * algorithm should be static such that the scheduler would not
-             * override the result of the planner
+             * Since we are using HEFT planning algorithm, the scheduling algorithm should
+             * be static such that the scheduler would not override the result of the
+             * planner
              */
-            Parameters.SchedulingAlgorithm sch_method = Parameters.SchedulingAlgorithm.STATIC;
+            Parameters.SchedulingAlgorithm sch_method = Parameters.SchedulingAlgorithm.IWD;
             Parameters.PlanningAlgorithm pln_method = Parameters.PlanningAlgorithm.DHEFT;
             ReplicaCatalog.FileSystem file_system = ReplicaCatalog.FileSystem.LOCAL;
 
@@ -89,15 +91,13 @@ public class WaterDropletPlanning extends WorkflowSimBasicExample1{
             /**
              * Initialize static parameters
              */
-            Parameters.init(vmNum, daxPath, null,
-                    null, op, cp, sch_method, pln_method,
-                    null, 0);
+            Parameters.init(vmNum, daxPath, null, null, op, cp, sch_method, pln_method, null, 0);
             ReplicaCatalog.init(file_system);
 
             // before creating any entities.
-            int num_user = 1;   // number of grid users
+            int num_user = 1; // number of grid users
             Calendar calendar = Calendar.getInstance();
-            boolean trace_flag = false;  // mean trace events
+            boolean trace_flag = false; // mean trace events
 
             // Initialize the CloudSim library
             CloudSim.init(num_user, calendar, trace_flag);
@@ -113,8 +113,8 @@ public class WaterDropletPlanning extends WorkflowSimBasicExample1{
              */
             WorkflowEngine wfEngine = wfPlanner.getWorkflowEngine();
             /**
-             * Create a list of VMs.The userId of a vm is basically the id of
-             * the scheduler that controls this vm.
+             * Create a list of VMs.The userId of a vm is basically the id of the scheduler
+             * that controls this vm.
              */
             List<CondorVM> vmlist0 = createVM(wfEngine.getSchedulerId(0), Parameters.getVmNum());
 
