@@ -25,9 +25,9 @@ import org.workflowsim.utils.Parameters;
 
 
 /**
- * The HEFT planning algorithm.
+ * The IWD planning algorithm.
  *
- * @author Pedro Paulo Vezz· Campos
+ * @author Pedro Paulo Vezz√° Campos
  * @date Oct 12, 2013
  */
 public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
@@ -183,7 +183,7 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
      */
     @Override
     public void run() {
-        Log.printLine("HEFT planner running with " + getTaskList().size()
+        Log.printLine("IWD planner running with " + getTaskList().size()
                 + " tasks.");
 
         averageBandwidth = calculateAverageBandwidth();
