@@ -25,7 +25,6 @@ import org.workflowsim.planning.BasePlanningAlgorithm;
 import org.workflowsim.planning.DHEFTPlanningAlgorithm;
 import org.workflowsim.planning.HEFTPlanningAlgorithm;
 import org.workflowsim.planning.RandomPlanningAlgorithm;
-import org.workflowsim.planning.WaterDropletPlanning;
 import org.workflowsim.utils.Parameters;
 import org.workflowsim.utils.Parameters.PlanningAlgorithm;
 
@@ -191,8 +190,6 @@ public final class WorkflowPlanner extends SimEntity {
             case DHEFT:
                 planner = new DHEFTPlanningAlgorithm();
                 break;
-            case IWT :
-            	planner = new WaterDropletPlanning();
             default:
                 planner = null;
                 break;
