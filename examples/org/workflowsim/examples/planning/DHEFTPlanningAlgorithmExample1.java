@@ -43,24 +43,24 @@ public class DHEFTPlanningAlgorithmExample1 extends HEFTPlanningAlgorithmExample
 
     ////////////////////////// STATIC METHODS ///////////////////////
     /**
-     * Creates main() to run this example This example has only one datacenter and
-     * one storage
+     * Creates main() to run this example This example has only one datacenter
+     * and one storage
      */
     public static void main(String[] args) {
 
         try {
-            // First step: Initialize the WorkflowSim package.
+            // First step: Initialize the WorkflowSim package. 
 
             /**
-             * However, the exact number of vms may not necessarily be vmNum If the data
-             * center or the host doesn't have sufficient resources the exact vmNum would be
-             * smaller than that. Take care.
+             * However, the exact number of vms may not necessarily be vmNum If
+             * the data center or the host doesn't have sufficient resources the
+             * exact vmNum would be smaller than that. Take care.
              */
-            int vmNum = 5;// number of vms;
+            int vmNum = 5;//number of vms;
             /**
              * Should change this based on real physical path
              */
-            String daxPath = "D:\\New folder (2)\\workflowsim\\WorkflowSim-1.0-master\\config\\dax\\Montage_25.xml";
+            String daxPath = "/Users/weiweich/NetBeansProjects/WorkflowSim-1.0/config/dax/Montage_100.xml";
 
             File daxFile = new File(daxPath);
             if (!daxFile.exists()) {
@@ -69,11 +69,11 @@ public class DHEFTPlanningAlgorithmExample1 extends HEFTPlanningAlgorithmExample
             }
 
             /**
-             * Since we are using HEFT planning algorithm, the scheduling algorithm should
-             * be static such that the scheduler would not override the result of the
-             * planner
+             * Since we are using HEFT planning algorithm, the scheduling
+             * algorithm should be static such that the scheduler would not
+             * override the result of the planner
              */
-            Parameters.SchedulingAlgorithm sch_method = Parameters.SchedulingAlgorithm.FCFS;
+            Parameters.SchedulingAlgorithm sch_method = Parameters.SchedulingAlgorithm.STATIC;
             Parameters.PlanningAlgorithm pln_method = Parameters.PlanningAlgorithm.DHEFT;
             ReplicaCatalog.FileSystem file_system = ReplicaCatalog.FileSystem.LOCAL;
 
@@ -91,13 +91,15 @@ public class DHEFTPlanningAlgorithmExample1 extends HEFTPlanningAlgorithmExample
             /**
              * Initialize static parameters
              */
-            Parameters.init(vmNum, daxPath, null, null, op, cp, sch_method, pln_method, null, 0);
+            Parameters.init(vmNum, daxPath, null,
+                    null, op, cp, sch_method, pln_method,
+                    null, 0);
             ReplicaCatalog.init(file_system);
 
             // before creating any entities.
-            int num_user = 1; // number of grid users
+            int num_user = 1;   // number of grid users
             Calendar calendar = Calendar.getInstance();
-            boolean trace_flag = false; // mean trace events
+            boolean trace_flag = false;  // mean trace events
 
             // Initialize the CloudSim library
             CloudSim.init(num_user, calendar, trace_flag);
@@ -113,8 +115,8 @@ public class DHEFTPlanningAlgorithmExample1 extends HEFTPlanningAlgorithmExample
              */
             WorkflowEngine wfEngine = wfPlanner.getWorkflowEngine();
             /**
-             * Create a list of VMs.The userId of a vm is basically the id of the scheduler
-             * that controls this vm.
+             * Create a list of VMs.The userId of a vm is basically the id of
+             * the scheduler that controls this vm.
              */
             List<CondorVM> vmlist0 = createVM(wfEngine.getSchedulerId(0), Parameters.getVmNum());
 

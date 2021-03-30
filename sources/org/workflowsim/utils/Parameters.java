@@ -28,80 +28,77 @@ import org.cloudbus.cloudsim.Log;
  */
 public class Parameters {
 
+    
     /*
      * Scheduling Algorithm (Local Scheduling Algorithm)
      */
 
     public enum SchedulingAlgorithm {
 
-        MAXMIN, MINMIN, MCT, DATA, STATIC, FCFS, ROUNDROBIN, IWD, INVALID
+        MAXMIN, MINMIN, MCT, DATA, 
+        STATIC, FCFS, ROUNDROBIN, INVALID
     }
-
+    
     /**
      * Planning Algorithm (Global Scheduling Algorithm)
      * 
      */
-    public enum PlanningAlgorithm {
-        INVALID, RANDOM, HEFT, DHEFT, IDW, IWT, IWD;
+    public enum PlanningAlgorithm{
+        INVALID, RANDOM, HEFT, DHEFT, IDW, IWT
     }
-
+    
     /**
      * File Type
      */
-    public enum FileType {
+    public enum FileType{
         NONE(0), INPUT(1), OUTPUT(2);
-
         public final int value;
-
-        private FileType(int fType) {
+        private FileType(int fType){
             this.value = fType;
         }
     }
-
+    
     /**
      * File Type
      */
-    public enum ClassType {
+    public enum ClassType{
         STAGE_IN(1), COMPUTE(2), STAGE_OUT(3), CLEAN_UP(4);
-
         public final int value;
-
-        private ClassType(int cType) {
+        private ClassType(int cType){
             this.value = cType;
         }
     }
-
+    
     /**
-     * The cost model DATACENTER: specify the cost per data center VM: specify the
-     * cost per VM
+     * The cost model
+     * DATACENTER: specify the cost per data center
+     * VM: specify the cost per VM
      */
-    public enum CostModel {
+    public enum CostModel{
         DATACENTER(1), VM(2);
-
         public final int value;
-
-        private CostModel(int model) {
+        private CostModel(int model){
             this.value = model;
         }
     }
-
-    /**
+    
+    /** 
      * Source Host (submit host)
      */
     public static String SOURCE = "source";
-
+    
     public static final int BASE = 0;
-
+    
     /**
      * Scheduling mode
      */
     private static SchedulingAlgorithm schedulingAlgorithm;
-
+    
     /**
      * Planning mode
      */
     private static PlanningAlgorithm planningAlgorithm;
-
+    
     /**
      * Reducer mode
      */
@@ -114,21 +111,21 @@ public class Parameters {
      * The physical path to DAX file
      */
     private static String daxPath;
-
+    
     /**
      * The physical path to DAX files
      */
     private static List<String> daxPaths;
     /**
-     * The physical path to runtime file In the runtime file, please use format as
-     * below ID1 1.0 ID2 2.0 ... This is optional, if you have specified task
+     * The physical path to runtime file In the runtime file, please use format
+     * as below ID1 1.0 ID2 2.0 ... This is optional, if you have specified task
      * runtime in DAX then you don't need to specify this file
      */
     private static String runtimePath;
     /**
-     * The physical path to datasize file In the datasize file, please use format as
-     * below DATA1 1000 DATA2 2000 ... This is optional, if you have specified
-     * datasize in DAX then you don't need to specify this file
+     * The physical path to datasize file In the datasize file, please use
+     * format as below DATA1 1000 DATA2 2000 ... This is optional, if you have
+     * specified datasize in DAX then you don't need to specify this file
      */
     private static String datasizePath;
     /**
@@ -151,48 +148,51 @@ public class Parameters {
      * Deadline of a workflow
      */
     private static long deadline;
-
+    
     /**
      * the bandwidth from one vm to one vm
      */
     private static double[][] bandwidths;
-
+    
+    
     /**
      * The maximum depth. It is inited manually and used in FailureGenerator
      */
     private static int maxDepth;
-
+    
     /**
      * Invalid String
      */
     private static final String INVALID = "Invalid";
-
+    
     /**
      * The scale of runtime. Multiple runtime by this
      */
     private static double runtime_scale = 1.0;
-
+    
     /**
      * The default cost model is based on datacenter, similar to CloudSim
      */
     private static CostModel costModel = CostModel.DATACENTER;
-
+    
     /**
      * A static function so that you can specify them in any place
      *
-     * @param vm,        the number of vms
-     * @param dax,       the DAX path
-     * @param runtime,   optional, the runtime file path
-     * @param datasize,  optional, the datasize file path
-     * @param op,        overhead parameters
-     * @param cp,        clustering parameters
+     * @param vm, the number of vms
+     * @param dax, the DAX path
+     * @param runtime, optional, the runtime file path
+     * @param datasize, optional, the datasize file path
+     * @param op, overhead parameters
+     * @param cp, clustering parameters
      * @param scheduler, scheduling mode
-     * @param planner,   planning mode
-     * @param rMethod    , reducer mode
-     * @param dl,        deadline
+     * @param planner, planning mode
+     * @param rMethod , reducer mode
+     * @param dl, deadline
      */
-    public static void init(int vm, String dax, String runtime, String datasize, OverheadParameters op,
-            ClusteringParameters cp, SchedulingAlgorithm scheduler, PlanningAlgorithm planner, String rMethod,
+    public static void init(
+            int vm, String dax, String runtime, String datasize,
+            OverheadParameters op, ClusteringParameters cp,
+            SchedulingAlgorithm scheduler, PlanningAlgorithm planner, String rMethod,
             long dl) {
 
         cParams = cp;
@@ -208,23 +208,25 @@ public class Parameters {
         deadline = dl;
         maxDepth = 0;
     }
-
+    
     /**
      * A static function so that you can specify them in any place
      *
-     * @param vm,        the number of vms
-     * @param dax,       the list of DAX paths
-     * @param runtime,   optional, the runtime file path
-     * @param datasize,  optional, the datasize file path
-     * @param op,        overhead parameters
-     * @param cp,        clustering parameters
+     * @param vm, the number of vms
+     * @param dax, the list of DAX paths 
+     * @param runtime, optional, the runtime file path
+     * @param datasize, optional, the datasize file path
+     * @param op, overhead parameters
+     * @param cp, clustering parameters
      * @param scheduler, scheduling mode
-     * @param planner,   planning mode
-     * @param rMethod    , reducer mode
-     * @param dl,        deadline of a workflow
+     * @param planner, planning mode
+     * @param rMethod , reducer mode
+     * @param dl, deadline of a workflow
      */
-    public static void init(int vm, List<String> dax, String runtime, String datasize, OverheadParameters op,
-            ClusteringParameters cp, SchedulingAlgorithm scheduler, PlanningAlgorithm planner, String rMethod,
+    public static void init(
+            int vm, List<String> dax, String runtime, String datasize,
+            OverheadParameters op, ClusteringParameters cp,
+            SchedulingAlgorithm scheduler, PlanningAlgorithm planner, String rMethod,
             long dl) {
 
         cParams = cp;
@@ -252,6 +254,8 @@ public class Parameters {
         return oParams;
     }
 
+    
+
     /**
      * Gets the reducer mode
      *
@@ -260,12 +264,14 @@ public class Parameters {
      * @post $none
      */
     public static String getReduceMethod() {
-        if (reduceMethod != null) {
+        if(reduceMethod!=null){
             return reduceMethod;
-        } else {
+        }else{
             return INVALID;
         }
     }
+
+   
 
     /**
      * Gets the DAX path
@@ -300,6 +306,7 @@ public class Parameters {
         return datasizePath;
     }
 
+    
     /**
      * Gets the vm number
      *
@@ -311,15 +318,16 @@ public class Parameters {
         return vmNum;
     }
 
+    
     /**
      * Gets the cost model
      * 
      * @return costModel
      */
-    public static CostModel getCostModel() {
+    public static CostModel getCostModel(){
         return costModel;
     }
-
+    
     /**
      * Sets the vm number
      *
@@ -346,23 +354,20 @@ public class Parameters {
     public static SchedulingAlgorithm getSchedulingAlgorithm() {
         return schedulingAlgorithm;
     }
-
+    
     /**
      * Gets the planning method
-     * 
      * @return the planning method
      * 
      */
     public static PlanningAlgorithm getPlanningAlgorithm() {
         return planningAlgorithm;
     }
-
     /**
      * Gets the version
-     * 
      * @return version
      */
-    public static String getVersion() {
+    public static String getVersion(){
         return version;
     }
 
@@ -370,63 +375,56 @@ public class Parameters {
         Log.printLine("WorkflowSim Version: " + version);
         Log.printLine("Change Note: " + note);
     }
-
     /*
      * Gets the deadline
      */
-    public static long getDeadline() {
-        return deadline;
+    public static long getDeadline(){
+    	return deadline;
     }
-
+    
     /**
      * Gets the maximum depth
-     * 
      * @return the maxDepth
      */
-    public static int getMaxDepth() {
+    public static int getMaxDepth(){
         return maxDepth;
     }
-
+    
     /**
      * Sets the maximum depth
-     * 
      * @param depth the maxDepth
      */
-    public static void setMaxDepth(int depth) {
+    public static void setMaxDepth(int depth){
         maxDepth = depth;
     }
-
+    
     /**
      * Sets the runtime scale
-     * 
-     * @param scale
+     * @param scale 
      */
-    public static void setRuntimeScale(double scale) {
+    public static void setRuntimeScale(double scale){
         runtime_scale = scale;
     }
-
+    
     /**
      * Sets the cost model
-     * 
      * @param model
      */
-    public static void setCostModel(CostModel model) {
+    public static void setCostModel(CostModel model){
         costModel = model;
     }
-
+    
     /**
      * Gets the runtime scale
-     * 
-     * @return
+     * @return 
      */
-    public static double getRuntimeScale() {
+    public static double getRuntimeScale(){
         return runtime_scale;
     }
-
+    
     /**
      * Gets the dax paths
-     * 
-     * @return
+     * @return 
      */
     public static List<String> getDAXPaths() {
         return daxPaths;
