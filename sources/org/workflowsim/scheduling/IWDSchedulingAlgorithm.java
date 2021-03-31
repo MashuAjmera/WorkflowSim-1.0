@@ -48,8 +48,7 @@ public class IWDSchedulingAlgorithm extends BaseSchedulingAlgorithm {
 	@Override
 	public void run() {
 
-		int[] priority = { 0, 989, 1000, 984, 981, 986, 982, 987, 990, 988, 991, 983, 992, 995, 985, 994, 993, 0, 999,
-				0, 0, 0, 998, 997, 996, 0 };
+		int[] priority = { 0,984, 1000, 979, 976, 981, 977, 982, 985, 983, 986, 978, 987, 994, 980, 993, 992, 988, 999, 989, 990, 991, 998, 997, 996, 995 };
 
 		// Log.printLine("Schedulin Cycle");
 		int size = getCloudletList().size();

@@ -103,7 +103,7 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 			m = g.childs(0);
 			while (true) {
 
-				int m1 = 0, m2 = -1;
+				int m1 = -1, m2 = -1;
 				Iterator<Integer> i = m.listIterator();
 				while (i.hasNext()) {
 					int n = i.next();
@@ -114,7 +114,7 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 					}
 
 				}
-				if (m1 == 0) {
+				if (m1 == -1) {
 					break;
 				}
 				best_path.add(m2);
@@ -269,6 +269,7 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 		t = getTaskList().size();
 		Graph g = new Graph(t + 1);
 		for (Task parent : getTaskList()) {
+			
 			int m = parent.getCloudletId();
 			g.addEdge(0, m);
 		}
@@ -279,6 +280,7 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 			for (Task child : parent.getChildList()) {
 				int n = child.getCloudletId();
 				g.addEdge(m, n);
+				
 
 //				transferCosts.get(parent).put(child, calculateTransferCost(parent, child));
 			}
@@ -293,12 +295,12 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 		t = m.get(m.size() - 1);
 		System.out.println(g.bpath(0, g) + "\n");
 		int priority = 1000;
-		while (t != 0) {
+		while (m.size() != 1) {
 
 			System.out.println("TTT" + t);
 			m = g.bpath(0, g);
 
-			for (int j = 0; j < m.size(); j++) {
+			for (int j = 1; j < m.size(); j++) {
 
 				// Printing the iterated value
 
