@@ -15,7 +15,13 @@
  */
 package org.workflowsim.planning;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import org.cloudbus.cloudsim.Consts;
 import org.cloudbus.cloudsim.Log;
@@ -23,7 +29,6 @@ import org.workflowsim.CondorVM;
 import org.workflowsim.FileItem;
 import org.workflowsim.Task;
 import org.workflowsim.utils.Parameters;
-import java.util.*;
 
 /**
  * The HEFT planning algorithm.
@@ -235,18 +240,23 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
      * files from each parent to each child
      */
     public Task gettask(int a) {
+        System.out.println("Gettask input " + a);
+        Task returnTask = null;
         for (Task parent : getTaskList()) {
+
             int m = parent.getCloudletId();
             for (Task child : parent.getChildList()) {
                 int n = child.getCloudletId();
                 if (m == a) {
-                    return parent;
+                    returnTask = parent;
                 }
                 if (n == a) {
-                    return child;
+                    returnTask = child;
                 }
             }
         }
+        return returnTask;
+
     }
 
     private void calculateTransferCosts() {
@@ -290,13 +300,16 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
             g.removeEdge(t);
             m = g.bpath(0, g);
             int priority = 1000;
-            for (Iterator it = m.iterator(); it.hasNext();) {
+            for (int i = 0; i < m.size(); i++) {
 
                 // Printing the iterated value
 
-                System.out.println("\nUsing ListIterator:\n");
-                int x = (int) it.next();
-
+                // it = it.next();
+                int x = m.get(i);
+                System.out.println("\nUsing ListIterator:\n" + x + "EYEE " + i);
+                if (x == 0) {
+                    continue;
+                }
                 Task t3 = gettask(x);
                 if (t3.getPriority() != 0) {
                     t3.setPriority(priority);
