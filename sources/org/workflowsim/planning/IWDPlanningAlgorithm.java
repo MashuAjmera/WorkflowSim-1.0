@@ -14,6 +14,7 @@
  * the License.
  */
 package org.workflowsim.planning;
+
 import java.util.*;
 
 import org.cloudbus.cloudsim.Consts;
@@ -22,12 +23,12 @@ import org.workflowsim.CondorVM;
 import org.workflowsim.FileItem;
 import org.workflowsim.Task;
 import org.workflowsim.utils.Parameters;
-
+import java.util.*;
 
 /**
  * The HEFT planning algorithm.
  *
- * @author Pedro Paulo Vezzá Campos
+ * @author Pedro Paulo Vezzï¿½ Campos
  * @date Oct 12, 2013
  */
 public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
@@ -38,110 +39,105 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
     private Map<CondorVM, List<Event>> schedules;
     private Map<Task, Double> earliestFinishTimes;
     private double averageBandwidth;
-    
+
     private class Graph {
-    	  private int V;
+        private int V;
 
-    	  public int count;
+        public int count;
 
-    	  private LinkedList<Integer> adj[];
+        private LinkedList<Integer> adj[];
 
-    	  @SuppressWarnings("unchecked")
-    	  Graph(int v) {
-    	    V = v;
-    	    adj = new LinkedList[v];
-    	    for (int i = 0; i < v; ++i)
-    	      adj[i] = new LinkedList();
-    	  }
+        @SuppressWarnings("unchecked")
+        Graph(int v) {
+            V = v;
+            adj = new LinkedList[v];
+            for (int i = 0; i < v; ++i)
+                adj[i] = new LinkedList();
+        }
 
-    	  void addEdge(int v, int w) {
-    	    adj[v].add(w);
-    	  }
+        void addEdge(int v, int w) {
+            adj[v].add(w);
+        }
 
-    	  void DFSUtil(int v, boolean visited[]) {
+        void DFSUtil(int v, boolean visited[]) {
 
-    	    visited[v] = true;
-    	    count++;
+            visited[v] = true;
+            count++;
 
-    	    Iterator<Integer> i = adj[v].listIterator();
-    	    while (i.hasNext()) {
-    	      int n = i.next();
-    	      if (!visited[n])
-    	        DFSUtil(n, visited);
-    	    }
-    	  }
+            Iterator<Integer> i = adj[v].listIterator();
+            while (i.hasNext()) {
+                int n = i.next();
+                if (!visited[n])
+                    DFSUtil(n, visited);
+            }
+        }
 
-    	  int DFS(int v) {
+        int DFS(int v) {
 
-    	    boolean visited[] = new boolean[V];
+            boolean visited[] = new boolean[V];
 
-    	    DFSUtil(v, visited);
-    	    int m= --count;
-    	    		count=0;
-    	    return m;
-    	  }
-    	  
-    	  public ArrayList<Integer> childs(int v)    {
-    		    ArrayList<Integer> numbers = new ArrayList<Integer>();
-    		    Iterator<Integer> i = adj[v].listIterator();
-    		    while (i.hasNext()) {
-    		        int n = i.next();
-    		        numbers.add(n);
-    		      }
-    		    
-    		    
-    		    return numbers;
-    		}
-    	  public ArrayList<Integer> bpath(int v,Graph g)    {
-    		  
-    	      ArrayList<Integer> best_path = new ArrayList<Integer>();
-    	      best_path.add(0);
-    	      
-    	      ArrayList<Integer> m,n2 = new ArrayList<Integer>();
-    		   m=g.childs(0);
-    	      while (true) {
-    	   	  
-    	   	   
-    	   	  
-    	   	int m1=0,m2=-1;
-    	   	Iterator<Integer> i = m.listIterator();
-    	  	    while (i.hasNext()) {
-    	  	        int n = i.next();
-    	  	        int t=g.childs(n).size();
-    	  	        if (t>=m1) {
-    	  	        	m1=t;
-    	  	        	m2=n;
-    	  	      }
-    	  	     best_path.add(n);
-    	  	     m=g.childs(n);
-    	  	        
-    	  	       
-    	  	        
-    	  	    }
-    	  	 if (m1==0) {
-    	       	break;
-    	       }
-    	  	 
-    	  	 
-    	      }
-    	      return best_path;
-    	  }
-    	 
-    	  void removeEdge(int v) {
-    		    for (int i = 0; i < V; i++) {
-    		      for (int j = 0; j < adj[i].size(); j++) {
-    		        if (adj[i].get(j) == v) {
-    		          adj[i].remove(j);
-    		          break;
-    		        }
-    		      }
-    		    }
-    		    while (adj[v].size() > 0) {
-    		      adj[v].remove();
-    		    }
-    		  }
-    	  
-    	}
+            DFSUtil(v, visited);
+            int m = --count;
+            count = 0;
+            return m;
+        }
+
+        public ArrayList<Integer> childs(int v) {
+            ArrayList<Integer> numbers = new ArrayList<Integer>();
+            Iterator<Integer> i = adj[v].listIterator();
+            while (i.hasNext()) {
+                int n = i.next();
+                numbers.add(n);
+            }
+
+            return numbers;
+        }
+
+        public ArrayList<Integer> bpath(int v, Graph g) {
+
+            ArrayList<Integer> best_path = new ArrayList<Integer>();
+            best_path.add(0);
+
+            ArrayList<Integer> m, n2 = new ArrayList<Integer>();
+            m = g.childs(0);
+            while (true) {
+
+                int m1 = 0, m2 = -1;
+                Iterator<Integer> i = m.listIterator();
+                while (i.hasNext()) {
+                    int n = i.next();
+                    int t = g.childs(n).size();
+                    if (t >= m1) {
+                        m1 = t;
+                        m2 = n;
+                    }
+                    best_path.add(n);
+                    m = g.childs(n);
+
+                }
+                if (m1 == 0) {
+                    break;
+                }
+
+            }
+            return best_path;
+        }
+
+        void removeEdge(int v) {
+            for (int i = 0; i < V; i++) {
+                for (int j = 0; j < adj[i].size(); j++) {
+                    if (adj[i].get(j) == v) {
+                        adj[i].remove(j);
+                        break;
+                    }
+                }
+            }
+            while (adj[v].size() > 0) {
+                adj[v].remove();
+            }
+        }
+
+    }
 
     private class Event {
 
@@ -183,8 +179,7 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
      */
     @Override
     public void run() {
-        Log.printLine("HEFT planner running with " + getTaskList().size()
-                + " tasks.");
+        Log.printLine("HEFT planner running with " + getTaskList().size() + " tasks.");
 
         averageBandwidth = calculateAverageBandwidth();
 
@@ -217,8 +212,8 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
     }
 
     /**
-     * Populates the computationCosts field with the time in seconds to compute
-     * a task in a vm.
+     * Populates the computationCosts field with the time in seconds to compute a
+     * task in a vm.
      */
     private void calculateComputationCosts() {
         for (Task task : getTaskList()) {
@@ -228,8 +223,7 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
                 if (vm.getNumberOfPes() < task.getNumberOfPes()) {
                     costsVm.put(vm, Double.MAX_VALUE);
                 } else {
-                    costsVm.put(vm,
-                            task.getCloudletTotalLength() / vm.getMips());
+                    costsVm.put(vm, task.getCloudletTotalLength() / vm.getMips());
                 }
             }
             computationCosts.put(task, costsVm);
@@ -240,8 +234,23 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
      * Populates the transferCosts map with the time in seconds to transfer all
      * files from each parent to each child
      */
+    public Task gettask(int a) {
+        for (Task parent : getTaskList()) {
+            int m = parent.getCloudletId();
+            for (Task child : parent.getChildList()) {
+                int n = child.getCloudletId();
+                if (m == a) {
+                    return parent;
+                }
+                if (n == a) {
+                    return child;
+                }
+            }
+        }
+    }
+
     private void calculateTransferCosts() {
-    	
+
         // Initializing the matrix
         for (Task task1 : getTaskList()) {
             Map<Task, Double> taskTransferCosts = new HashMap<>();
@@ -251,49 +260,56 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
             transferCosts.put(task1, taskTransferCosts);
         }
         int t;
-        t=getTaskList().size();
-        Graph g = new Graph(t+1);
-       
-        
-        
+        t = getTaskList().size();
+        Graph g = new Graph(t + 1);
+        for (Task parent : getTaskList()) {
+            int m = parent.getCloudletId();
+            g.addEdge(0, m);
+        }
+
         // Calculating the actual values
         for (Task parent : getTaskList()) {
-        	int m=parent.getCloudletId();
+            int m = parent.getCloudletId();
             for (Task child : parent.getChildList()) {
-            	int n =child.getCloudletId();
-            	g.addEdge(m-1,n-1);
-            	
-            	
-                transferCosts.get(parent).put(child,
-                        calculateTransferCost(parent, child));
+                int n = child.getCloudletId();
+                g.addEdge(m, n);
+
+                transferCosts.get(parent).put(child, calculateTransferCost(parent, child));
             }
         }
-        
-        
-        
-       ArrayList<Integer> best_path = new ArrayList<Integer>();
-       best_path.add(0);
-       
-       ArrayList<Integer> m= new ArrayList<Integer>();
-	   m=g.childs(0);
-	   m=g.bpath(0, g);
-	   t=m.get(m.size()-1);
-	   System.out.println(g.bpath(0, g)+ "\n");
-       while (t!=0){
-    	   g.removeEdge(t);
-    	   m=g.bpath(0, g);
-    	   
-    	   System.out.println(m+ "\n");
-    	   t=m.get(m.size()-1);
-    	   
-    	   
-       }                    
-      
-       
-       
-        
-    }    
-    
+
+        ArrayList<Integer> best_path = new ArrayList<Integer>();
+        best_path.add(0);
+
+        ArrayList<Integer> m = new ArrayList<Integer>();
+        m = g.childs(0);
+        m = g.bpath(0, g);
+        t = m.get(m.size() - 1);
+        System.out.println(g.bpath(0, g) + "\n");
+        while (t != 0) {
+            g.removeEdge(t);
+            m = g.bpath(0, g);
+            int priority = 1000;
+            for (Iterator it = m.iterator(); it.hasNext();) {
+
+                // Printing the iterated value
+
+                System.out.println("\nUsing ListIterator:\n");
+                int x = (int) it.next();
+
+                Task t3 = gettask(x);
+                if (t3.getPriority() != 0) {
+                    t3.setPriority(priority);
+                    priority = priority - 1;
+                }
+
+                System.out.println(m + "\n");
+                t = m.get(m.size() - 1);
+
+            }
+        }
+
+    }
 
     /**
      * Accounts the time in seconds necessary to transfer all files described
@@ -323,7 +339,7 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
             }
         }
 
-        //file Size is in Bytes, acc in MB
+        // file Size is in Bytes, acc in MB
         acc = acc / Consts.MILLION;
         // acc in MB, averageBandwidth in Mb/s
         return acc * 8 / averageBandwidth;
@@ -339,8 +355,7 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
     }
 
     /**
-     * Populates rank.get(task) with the rank of task as defined in the HEFT
-     * paper.
+     * Populates rank.get(task) with the rank of task as defined in the HEFT paper.
      *
      * @param task The task have the rank calculates
      * @return The rank
@@ -360,8 +375,7 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 
         double max = 0.0;
         for (Task child : task.getChildList()) {
-            double childCost = transferCosts.get(task).get(child)
-                    + calculateRank(child);
+            double childCost = transferCosts.get(task).get(child) + calculateRank(child);
             max = Math.max(max, childCost);
         }
 
@@ -428,19 +442,17 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
     }
 
     /**
-     * Finds the best time slot available to minimize the finish time of the
-     * given task in the vm with the constraint of not scheduling it before
-     * readyTime. If occupySlot is true, reserves the time slot in the schedule.
+     * Finds the best time slot available to minimize the finish time of the given
+     * task in the vm with the constraint of not scheduling it before readyTime. If
+     * occupySlot is true, reserves the time slot in the schedule.
      *
-     * @param task The task to have the time slot reserved
-     * @param vm The vm that will execute the task
-     * @param readyTime The first moment that the task is available to be
-     * scheduled
+     * @param task       The task to have the time slot reserved
+     * @param vm         The vm that will execute the task
+     * @param readyTime  The first moment that the task is available to be scheduled
      * @param occupySlot If true, reserves the time slot in the schedule.
      * @return The minimal finish time of the task in the vmn
      */
-    private double findFinishTime(Task task, CondorVM vm, double readyTime,
-            boolean occupySlot) {
+    private double findFinishTime(Task task, CondorVM vm, double readyTime, boolean occupySlot) {
         List<Event> sched = schedules.get(vm);
         double computationCost = computationCosts.get(task).get(vm);
         double start, finish;
