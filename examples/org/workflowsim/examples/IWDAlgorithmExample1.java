@@ -54,11 +54,11 @@ public class IWDAlgorithmExample1 {
 		vm[0] = new CondorVM(0, userId, mips, 1, 1700, bw, 160000, vmm, 0.044, costPerMem, costPerStorage, costPerBw,
 				new CloudletSchedulerSpaceShared());
 		list.add(vm[0]);
-		vm[1] = new CondorVM(1, userId, mips * 2, 1, 3750, bw, 410000, vmm, 0.087, costPerMem, costPerStorage, costPerBw,
-				new CloudletSchedulerSpaceShared());
+		vm[1] = new CondorVM(1, userId, mips * 2, 1, 3750, bw, 410000, vmm, 0.087, costPerMem, costPerStorage,
+				costPerBw, new CloudletSchedulerSpaceShared());
 		list.add(vm[1]);
-		vm[2] = new CondorVM(2, userId, mips * 8, 1, 7500, bw, 840000, vmm, 0.175, costPerMem, costPerStorage, costPerBw,
-				new CloudletSchedulerSpaceShared());
+		vm[2] = new CondorVM(2, userId, mips * 8, 1, 7500, bw, 840000, vmm, 0.175, costPerMem, costPerStorage,
+				costPerBw, new CloudletSchedulerSpaceShared());
 		list.add(vm[2]);
 		vm[3] = new CondorVM(3, userId, mips * 32, 1, 15000, bw, 840000 * 2, vmm, 0.35, costPerMem, costPerStorage,
 				costPerBw, new CloudletSchedulerSpaceShared());
@@ -104,8 +104,9 @@ public class IWDAlgorithmExample1 {
 			 * be static such that the scheduler would not override the result of the
 			 * planner
 			 */
-			Parameters.SchedulingAlgorithm sch_method = Parameters.SchedulingAlgorithm.INVALID;
+
 			Parameters.PlanningAlgorithm pln_method = Parameters.PlanningAlgorithm.IWD;
+			Parameters.SchedulingAlgorithm sch_method = Parameters.SchedulingAlgorithm.FCFS;
 			ReplicaCatalog.FileSystem file_system = ReplicaCatalog.FileSystem.LOCAL;
 
 			/**
@@ -212,8 +213,8 @@ public class IWDAlgorithmExample1 {
 		LinkedList<Storage> storageList = new LinkedList<>(); // we are not adding SAN devices by now
 		WorkflowDatacenter datacenter = null;
 
-		DatacenterCharacteristics characteristics = new DatacenterCharacteristics(arch, os, vmm, hostList, time_zone, cost,
-				costPerMem, costPerStorage, costPerBw);
+		DatacenterCharacteristics characteristics = new DatacenterCharacteristics(arch, os, vmm, hostList, time_zone,
+				cost, costPerMem, costPerStorage, costPerBw);
 
 		// 5. Finally, we need to create a storage object.
 		/**
@@ -226,8 +227,8 @@ public class IWDAlgorithmExample1 {
 			HarddriveStorage s1 = new HarddriveStorage(name, 1e12);
 			s1.setMaxTransferRate(maxTransferRate);
 			storageList.add(s1);
-			datacenter = new WorkflowDatacenter(name, characteristics, new VmAllocationPolicySimple(hostList), storageList,
-					0);
+			datacenter = new WorkflowDatacenter(name, characteristics, new VmAllocationPolicySimple(hostList),
+					storageList, 0);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -243,9 +244,9 @@ public class IWDAlgorithmExample1 {
 		String indent = "    ";
 		Log.printLine();
 		Log.printLine("========== OUTPUT ==========");
-		Log.printLine(
-				"Job ID" + indent + "Task ID" + indent + "STATUS" + indent + "Data center ID" + indent + "VM ID" + indent
-						+ indent + "Time" + indent + "Start Time" + indent + "Finish Time" + indent + "Depth" + indent + "Cost");
+		Log.printLine("Job ID" + indent + "Task ID" + indent + "STATUS" + indent + "Data center ID" + indent + "VM ID"
+				+ indent + indent + "Time" + indent + "Start Time" + indent + "Finish Time" + indent + "Depth" + indent
+				+ "Cost");
 		DecimalFormat dft = new DecimalFormat("###.##");
 		double cost = 0.0;
 
@@ -261,15 +262,17 @@ public class IWDAlgorithmExample1 {
 
 			if (job.getCloudletStatus() == Cloudlet.SUCCESS) {
 				Log.print("SUCCESS");
-				Log.printLine(indent + indent + job.getResourceId() + indent + indent + indent + job.getVmId() + indent + indent
-						+ indent + dft.format(job.getActualCPUTime()) + indent + indent + dft.format(job.getExecStartTime())
-						+ indent + indent + indent + dft.format(job.getFinishTime()) + indent + indent + indent + job.getDepth()
-						+ indent + indent + dft.format(job.getProcessingCost()));
+				Log.printLine(indent + indent + job.getResourceId() + indent + indent + indent + job.getVmId() + indent
+						+ indent + indent + dft.format(job.getActualCPUTime()) + indent + indent
+						+ dft.format(job.getExecStartTime()) + indent + indent + indent
+						+ dft.format(job.getFinishTime()) + indent + indent + indent + job.getDepth() + indent + indent
+						+ dft.format(job.getProcessingCost()));
 			} else if (job.getCloudletStatus() == Cloudlet.FAILED) {
 				Log.print("FAILED");
-				Log.printLine(indent + indent + job.getResourceId() + indent + indent + indent + job.getVmId() + indent + indent
-						+ indent + dft.format(job.getActualCPUTime()) + indent + indent + dft.format(job.getExecStartTime())
-						+ indent + indent + indent + dft.format(job.getFinishTime()) + indent + indent + indent + job.getDepth());
+				Log.printLine(indent + indent + job.getResourceId() + indent + indent + indent + job.getVmId() + indent
+						+ indent + indent + dft.format(job.getActualCPUTime()) + indent + indent
+						+ dft.format(job.getExecStartTime()) + indent + indent + indent
+						+ dft.format(job.getFinishTime()) + indent + indent + indent + job.getDepth());
 			}
 			cost += job.getProcessingCost();
 		}

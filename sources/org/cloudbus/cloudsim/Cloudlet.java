@@ -16,8 +16,8 @@ import java.util.List;
 import org.cloudbus.cloudsim.core.CloudSim;
 
 /**
- * Cloudlet is an extension to the cloudlet. It stores, despite all the information encapsulated in
- * the Cloudlet, the ID of the VM running it.
+ * Cloudlet is an extension to the cloudlet. It stores, despite all the
+ * information encapsulated in the Cloudlet, the ID of the VM running it.
  * 
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
@@ -26,8 +26,8 @@ import org.cloudbus.cloudsim.core.CloudSim;
 public class Cloudlet {
 
 	/**
-	 * The User or Broker ID. It is advisable that broker set this ID with its own ID, so that
-	 * CloudResource returns to it after the execution.
+	 * The User or Broker ID. It is advisable that broker set this ID with its own
+	 * ID, so that CloudResource returns to it after the execution.
 	 **/
 	private int userId;
 
@@ -37,8 +37,8 @@ public class Cloudlet {
 	private long cloudletLength;
 
 	/**
-	 * The input file size of this Cloudlet before execution (unit: in byte). in byte = program +
-	 * input data size
+	 * The input file size of this Cloudlet before execution (unit: in byte). in
+	 * byte = program + input data size
 	 */
 	private final long cloudletFileSize;
 
@@ -61,9 +61,9 @@ public class Cloudlet {
 	private double finishTime;
 
 	/**
-	 * Start time of executing this Cloudlet. With new functionalities, such as CANCEL, PAUSED and
-	 * RESUMED, this attribute only stores the latest execution time. Previous execution time are
-	 * ignored.
+	 * Start time of executing this Cloudlet. With new functionalities, such as
+	 * CANCEL, PAUSED and RESUMED, this attribute only stores the latest execution
+	 * time. Previous execution time are ignored.
 	 */
 	private double execStartTime;
 
@@ -115,7 +115,8 @@ public class Cloudlet {
 	public static final int CANCELED = 6;
 
 	/**
-	 * The Cloudlet has been paused. It can be resumed by changing the status into <tt>RESUMED</tt>.
+	 * The Cloudlet has been paused. It can be resumed by changing the status into
+	 * <tt>RESUMED</tt>.
 	 */
 	public static final int PAUSED = 7;
 
@@ -147,48 +148,36 @@ public class Cloudlet {
 
 	// Data cloudlet
 	/** The required files. */
-	private List<String> requiredFiles = null;   // list of required filenames
+	private List<String> requiredFiles = null; // list of required filenames
 
 	/**
-	 * Allocates a new Cloudlet object. The Cloudlet length, input and output file sizes should be
-	 * greater than or equal to 1. By default this constructor sets the history of this object.
+	 * Allocates a new Cloudlet object. The Cloudlet length, input and output file
+	 * sizes should be greater than or equal to 1. By default this constructor sets
+	 * the history of this object.
 	 * 
-	 * @param cloudletId the unique ID of this Cloudlet
-	 * @param cloudletLength the length or size (in MI) of this cloudlet to be executed in a
-	 *            PowerDatacenter
-	 * @param cloudletFileSize the file size (in byte) of this cloudlet <tt>BEFORE</tt> submitting
-	 *            to a PowerDatacenter
-	 * @param cloudletOutputSize the file size (in byte) of this cloudlet <tt>AFTER</tt> finish
-	 *            executing by a PowerDatacenter
-	 * @param pesNumber the pes number
+	 * @param cloudletId          the unique ID of this Cloudlet
+	 * @param cloudletLength      the length or size (in MI) of this cloudlet to be
+	 *                            executed in a PowerDatacenter
+	 * @param cloudletFileSize    the file size (in byte) of this cloudlet
+	 *                            <tt>BEFORE</tt> submitting to a PowerDatacenter
+	 * @param cloudletOutputSize  the file size (in byte) of this cloudlet
+	 *                            <tt>AFTER</tt> finish executing by a
+	 *                            PowerDatacenter
+	 * @param pesNumber           the pes number
 	 * @param utilizationModelCpu the utilization model cpu
 	 * @param utilizationModelRam the utilization model ram
-	 * @param utilizationModelBw the utilization model bw
+	 * @param utilizationModelBw  the utilization model bw
 	 * @pre cloudletID >= 0
 	 * @pre cloudletLength >= 0.0
 	 * @pre cloudletFileSize >= 1
 	 * @pre cloudletOutputSize >= 1
 	 * @post $none
 	 */
-	public Cloudlet(
-			final int cloudletId,
-			final long cloudletLength,
-			final int pesNumber,
-			final long cloudletFileSize,
-			final long cloudletOutputSize,
-			final UtilizationModel utilizationModelCpu,
-			final UtilizationModel utilizationModelRam,
-			final UtilizationModel utilizationModelBw) {
-		this(
-				cloudletId,
-				cloudletLength,
-				pesNumber,
-				cloudletFileSize,
-				cloudletOutputSize,
-				utilizationModelCpu,
-				utilizationModelRam,
-				utilizationModelBw,
-				false);
+	public Cloudlet(final int cloudletId, final long cloudletLength, final int pesNumber, final long cloudletFileSize,
+			final long cloudletOutputSize, final UtilizationModel utilizationModelCpu,
+			final UtilizationModel utilizationModelRam, final UtilizationModel utilizationModelBw) {
+		this(cloudletId, cloudletLength, pesNumber, cloudletFileSize, cloudletOutputSize, utilizationModelCpu,
+				utilizationModelRam, utilizationModelBw, false);
 		vmId = -1;
 		accumulatedBwCost = 0.0;
 		costPerBw = 0.0;
@@ -197,49 +186,35 @@ public class Cloudlet {
 	}
 
 	/**
-	 * Allocates a new Cloudlet object. The Cloudlet length, input and output file sizes should be
-	 * greater than or equal to 1.
+	 * Allocates a new Cloudlet object. The Cloudlet length, input and output file
+	 * sizes should be greater than or equal to 1.
 	 * 
-	 * @param cloudletId the unique ID of this cloudlet
-	 * @param cloudletLength the length or size (in MI) of this cloudlet to be executed in a
-	 *            PowerDatacenter
-	 * @param cloudletFileSize the file size (in byte) of this cloudlet <tt>BEFORE</tt> submitting
-	 *            to a PowerDatacenter
-	 * @param cloudletOutputSize the file size (in byte) of this cloudlet <tt>AFTER</tt> finish
-	 *            executing by a PowerDatacenter
-	 * @param record record the history of this object or not
-	 * @param fileList list of files required by this cloudlet
-	 * @param pesNumber the pes number
+	 * @param cloudletId          the unique ID of this cloudlet
+	 * @param cloudletLength      the length or size (in MI) of this cloudlet to be
+	 *                            executed in a PowerDatacenter
+	 * @param cloudletFileSize    the file size (in byte) of this cloudlet
+	 *                            <tt>BEFORE</tt> submitting to a PowerDatacenter
+	 * @param cloudletOutputSize  the file size (in byte) of this cloudlet
+	 *                            <tt>AFTER</tt> finish executing by a
+	 *                            PowerDatacenter
+	 * @param record              record the history of this object or not
+	 * @param fileList            list of files required by this cloudlet
+	 * @param pesNumber           the pes number
 	 * @param utilizationModelCpu the utilization model cpu
 	 * @param utilizationModelRam the utilization model ram
-	 * @param utilizationModelBw the utilization model bw
+	 * @param utilizationModelBw  the utilization model bw
 	 * @pre cloudletID >= 0
 	 * @pre cloudletLength >= 0.0
 	 * @pre cloudletFileSize >= 1
 	 * @pre cloudletOutputSize >= 1
 	 * @post $none
 	 */
-	public Cloudlet(
-			final int cloudletId,
-			final long cloudletLength,
-			final int pesNumber,
-			final long cloudletFileSize,
-			final long cloudletOutputSize,
-			final UtilizationModel utilizationModelCpu,
-			final UtilizationModel utilizationModelRam,
-			final UtilizationModel utilizationModelBw,
-			final boolean record,
+	public Cloudlet(final int cloudletId, final long cloudletLength, final int pesNumber, final long cloudletFileSize,
+			final long cloudletOutputSize, final UtilizationModel utilizationModelCpu,
+			final UtilizationModel utilizationModelRam, final UtilizationModel utilizationModelBw, final boolean record,
 			final List<String> fileList) {
-		this(
-				cloudletId,
-				cloudletLength,
-				pesNumber,
-				cloudletFileSize,
-				cloudletOutputSize,
-				utilizationModelCpu,
-				utilizationModelRam,
-				utilizationModelBw,
-				record);
+		this(cloudletId, cloudletLength, pesNumber, cloudletFileSize, cloudletOutputSize, utilizationModelCpu,
+				utilizationModelRam, utilizationModelBw, record);
 		vmId = -1;
 		accumulatedBwCost = 0.0;
 		costPerBw = 0.0;
@@ -248,47 +223,35 @@ public class Cloudlet {
 	}
 
 	/**
-	 * Allocates a new Cloudlet object. The Cloudlet length, input and output file sizes should be
-	 * greater than or equal to 1. By default this constructor sets the history of this object.
+	 * Allocates a new Cloudlet object. The Cloudlet length, input and output file
+	 * sizes should be greater than or equal to 1. By default this constructor sets
+	 * the history of this object.
 	 * 
-	 * @param cloudletId the unique ID of this Cloudlet
-	 * @param cloudletLength the length or size (in MI) of this cloudlet to be executed in a
-	 *            PowerDatacenter
-	 * @param cloudletFileSize the file size (in byte) of this cloudlet <tt>BEFORE</tt> submitting
-	 *            to a PowerDatacenter
-	 * @param cloudletOutputSize the file size (in byte) of this cloudlet <tt>AFTER</tt> finish
-	 *            executing by a PowerDatacenter
-	 * @param fileList list of files required by this cloudlet
-	 * @param pesNumber the pes number
+	 * @param cloudletId          the unique ID of this Cloudlet
+	 * @param cloudletLength      the length or size (in MI) of this cloudlet to be
+	 *                            executed in a PowerDatacenter
+	 * @param cloudletFileSize    the file size (in byte) of this cloudlet
+	 *                            <tt>BEFORE</tt> submitting to a PowerDatacenter
+	 * @param cloudletOutputSize  the file size (in byte) of this cloudlet
+	 *                            <tt>AFTER</tt> finish executing by a
+	 *                            PowerDatacenter
+	 * @param fileList            list of files required by this cloudlet
+	 * @param pesNumber           the pes number
 	 * @param utilizationModelCpu the utilization model cpu
 	 * @param utilizationModelRam the utilization model ram
-	 * @param utilizationModelBw the utilization model bw
+	 * @param utilizationModelBw  the utilization model bw
 	 * @pre cloudletID >= 0
 	 * @pre cloudletLength >= 0.0
 	 * @pre cloudletFileSize >= 1
 	 * @pre cloudletOutputSize >= 1
 	 * @post $none
 	 */
-	public Cloudlet(
-			final int cloudletId,
-			final long cloudletLength,
-			final int pesNumber,
-			final long cloudletFileSize,
-			final long cloudletOutputSize,
-			final UtilizationModel utilizationModelCpu,
-			final UtilizationModel utilizationModelRam,
-			final UtilizationModel utilizationModelBw,
+	public Cloudlet(final int cloudletId, final long cloudletLength, final int pesNumber, final long cloudletFileSize,
+			final long cloudletOutputSize, final UtilizationModel utilizationModelCpu,
+			final UtilizationModel utilizationModelRam, final UtilizationModel utilizationModelBw,
 			final List<String> fileList) {
-		this(
-				cloudletId,
-				cloudletLength,
-				pesNumber,
-				cloudletFileSize,
-				cloudletOutputSize,
-				utilizationModelCpu,
-				utilizationModelRam,
-				utilizationModelBw,
-				false);
+		this(cloudletId, cloudletLength, pesNumber, cloudletFileSize, cloudletOutputSize, utilizationModelCpu,
+				utilizationModelRam, utilizationModelBw, false);
 		vmId = -1;
 		accumulatedBwCost = 0.0;
 		costPerBw = 0.0;
@@ -297,43 +260,38 @@ public class Cloudlet {
 	}
 
 	/**
-	 * Allocates a new Cloudlet object. The Cloudlet length, input and output file sizes should be
-	 * greater than or equal to 1.
+	 * Allocates a new Cloudlet object. The Cloudlet length, input and output file
+	 * sizes should be greater than or equal to 1.
 	 * 
-	 * @param cloudletId the unique ID of this cloudlet
-	 * @param cloudletLength the length or size (in MI) of this cloudlet to be executed in a
-	 *            PowerDatacenter
-	 * @param cloudletFileSize the file size (in byte) of this cloudlet <tt>BEFORE</tt> submitting
-	 *            to a PowerDatacenter
-	 * @param cloudletOutputSize the file size (in byte) of this cloudlet <tt>AFTER</tt> finish
-	 *            executing by a PowerDatacenter
-	 * @param record record the history of this object or not
-	 * @param pesNumber the pes number
+	 * @param cloudletId          the unique ID of this cloudlet
+	 * @param cloudletLength      the length or size (in MI) of this cloudlet to be
+	 *                            executed in a PowerDatacenter
+	 * @param cloudletFileSize    the file size (in byte) of this cloudlet
+	 *                            <tt>BEFORE</tt> submitting to a PowerDatacenter
+	 * @param cloudletOutputSize  the file size (in byte) of this cloudlet
+	 *                            <tt>AFTER</tt> finish executing by a
+	 *                            PowerDatacenter
+	 * @param record              record the history of this object or not
+	 * @param pesNumber           the pes number
 	 * @param utilizationModelCpu the utilization model cpu
 	 * @param utilizationModelRam the utilization model ram
-	 * @param utilizationModelBw the utilization model bw
+	 * @param utilizationModelBw  the utilization model bw
 	 * @pre cloudletID >= 0
 	 * @pre cloudletLength >= 0.0
 	 * @pre cloudletFileSize >= 1
 	 * @pre cloudletOutputSize >= 1
 	 * @post $none
 	 */
-	public Cloudlet(
-			final int cloudletId,
-			final long cloudletLength,
-			final int pesNumber,
-			final long cloudletFileSize,
-			final long cloudletOutputSize,
-			final UtilizationModel utilizationModelCpu,
-			final UtilizationModel utilizationModelRam,
-			final UtilizationModel utilizationModelBw,
+	public Cloudlet(final int cloudletId, final long cloudletLength, final int pesNumber, final long cloudletFileSize,
+			final long cloudletOutputSize, final UtilizationModel utilizationModelCpu,
+			final UtilizationModel utilizationModelRam, final UtilizationModel utilizationModelBw,
 			final boolean record) {
-		userId = -1;          // to be set by a Broker or user
+		userId = -1; // to be set by a Broker or user
 		status = CREATED;
 		this.cloudletId = cloudletId;
 		numberOfPes = pesNumber;
 		execStartTime = 0.0;
-		finishTime = -1.0;    // meaning this Cloudlet hasn't finished yet
+		finishTime = -1.0; // meaning this Cloudlet hasn't finished yet
 		classType = 0;
 		netToS = 0;
 
@@ -363,7 +321,8 @@ public class Cloudlet {
 	// ////////////////////// INTERNAL CLASS ///////////////////////////////////
 
 	/**
-	 * Internal class that keeps track Cloudlet's movement in different CloudResources.
+	 * Internal class that keeps track Cloudlet's movement in different
+	 * CloudResources.
 	 */
 	private static class Resource {
 
@@ -371,8 +330,8 @@ public class Cloudlet {
 		public double submissionTime = 0.0;
 
 		/**
-		 * The time of this Cloudlet resides in a CloudResource (from arrival time until departure
-		 * time).
+		 * The time of this Cloudlet resides in a CloudResource (from arrival time until
+		 * departure time).
 		 */
 		public double wallClockTime = 0.0;
 
@@ -399,7 +358,8 @@ public class Cloudlet {
 	 * Sets the id of the reservation made for this cloudlet.
 	 * 
 	 * @param resId the reservation ID
-	 * @return <tt>true</tt> if the ID has successfully been set or <tt>false</tt> otherwise.
+	 * @return <tt>true</tt> if the ID has successfully been set or <tt>false</tt>
+	 *         otherwise.
 	 */
 	public boolean setReservationId(final int resId) {
 		if (resId <= 0) {
@@ -423,7 +383,8 @@ public class Cloudlet {
 	/**
 	 * Checks whether this Cloudlet is submitted by reserving or not.
 	 * 
-	 * @return <tt>true</tt> if this Cloudlet has reserved before, <tt>false</tt> otherwise
+	 * @return <tt>true</tt> if this Cloudlet has reserved before, <tt>false</tt>
+	 *         otherwise
 	 */
 	public boolean hasReserved() {
 		if (reservationId == -1) {
@@ -433,11 +394,12 @@ public class Cloudlet {
 	}
 
 	/**
-	 * Sets the length or size (in MI) of this Cloudlet to be executed in a CloudResource. This
-	 * Cloudlet length is calculated for 1 Pe only <tt>not</tt> the total length.
+	 * Sets the length or size (in MI) of this Cloudlet to be executed in a
+	 * CloudResource. This Cloudlet length is calculated for 1 Pe only <tt>not</tt>
+	 * the total length.
 	 * 
-	 * @param cloudletLength the length or size (in MI) of this Cloudlet to be executed in a
-	 *            CloudResource
+	 * @param cloudletLength the length or size (in MI) of this Cloudlet to be
+	 *                       executed in a CloudResource
 	 * @return <tt>true</tt> if it is successful, <tt>false</tt> otherwise
 	 * @pre cloudletLength > 0
 	 * @post $none
@@ -450,12 +412,13 @@ public class Cloudlet {
 		this.cloudletLength = cloudletLength;
 		return true;
 	}
-	
-	private int priority;
-	
+
+	private int priority = 0;
+
 	public void setCloudletPriority(int a) {
-		this.priority =a;
+		this.priority = a;
 	}
+
 	public int getCloudletPriority() {
 		return this.priority;
 	}
@@ -463,8 +426,9 @@ public class Cloudlet {
 	/**
 	 * Sets the network service level for sending this cloudlet over a network.
 	 * 
-	 * @param netServiceLevel determines the kind of service this cloudlet receives in the network
-	 *            (applicable to selected PacketScheduler class only)
+	 * @param netServiceLevel determines the kind of service this cloudlet receives
+	 *                        in the network (applicable to selected PacketScheduler
+	 *                        class only)
 	 * @return <code>true</code> if successful.
 	 * @pre netServiceLevel >= 0
 	 * @post $none
@@ -539,8 +503,8 @@ public class Cloudlet {
 	/**
 	 * Sets the number of PEs required to run this Cloudlet. <br>
 	 * NOTE: The Cloudlet length is computed only for 1 Pe for simplicity. <br>
-	 * For example, this Cloudlet has a length of 500 MI and requires 2 PEs. This means each Pe will
-	 * execute 500 MI of this Cloudlet.
+	 * For example, this Cloudlet has a length of 500 MI and requires 2 PEs. This
+	 * means each Pe will execute 500 MI of this Cloudlet.
 	 * 
 	 * @param numberOfPes number of Pe
 	 * @return <tt>true</tt> if it is successful, <tt>false</tt> otherwise
@@ -567,8 +531,8 @@ public class Cloudlet {
 	}
 
 	/**
-	 * Gets the history of this Cloudlet. The layout of this history is in a readable table column
-	 * with <tt>time</tt> and <tt>description</tt> as headers.
+	 * Gets the history of this Cloudlet. The layout of this history is in a
+	 * readable table column with <tt>time</tt> and <tt>description</tt> as headers.
 	 * 
 	 * @return a String containing the history of this Cloudlet object.
 	 * @pre $none
@@ -586,12 +550,12 @@ public class Cloudlet {
 	}
 
 	/**
-	 * Gets the length of this Cloudlet that has been executed so far from the latest CloudResource.
-	 * This method is useful when trying to move this Cloudlet into different CloudResources or to
-	 * cancel it.
+	 * Gets the length of this Cloudlet that has been executed so far from the
+	 * latest CloudResource. This method is useful when trying to move this Cloudlet
+	 * into different CloudResources or to cancel it.
 	 * 
-	 * @return the length of a partially executed Cloudlet or the full Cloudlet length if it is
-	 *         completed
+	 * @return the length of a partially executed Cloudlet or the full Cloudlet
+	 *         length if it is completed
 	 * @pre $none
 	 * @post $result >= 0.0
 	 */
@@ -611,7 +575,8 @@ public class Cloudlet {
 	/**
 	 * Checks whether this Cloudlet has finished execution or not.
 	 * 
-	 * @return <tt>true</tt> if this Cloudlet has finished execution, <tt>false</tt> otherwise
+	 * @return <tt>true</tt> if this Cloudlet has finished execution, <tt>false</tt>
+	 *         otherwise
 	 * @pre $none
 	 * @post $none
 	 */
@@ -632,9 +597,9 @@ public class Cloudlet {
 	}
 
 	/**
-	 * Sets the length of this Cloudlet that has been executed so far. This method is used by
-	 * ResCloudlet class when an application is decided to cancel or to move this Cloudlet into
-	 * different CloudResources.
+	 * Sets the length of this Cloudlet that has been executed so far. This method
+	 * is used by ResCloudlet class when an application is decided to cancel or to
+	 * move this Cloudlet into different CloudResources.
 	 * 
 	 * @param length length of this Cloudlet
 	 * @see gridsim.AllocPolicy
@@ -657,8 +622,9 @@ public class Cloudlet {
 	}
 
 	/**
-	 * Sets the user or owner ID of this Cloudlet. It is <tt>VERY</tt> important to set the user ID,
-	 * otherwise this Cloudlet will not be executed in a CloudResource.
+	 * Sets the user or owner ID of this Cloudlet. It is <tt>VERY</tt> important to
+	 * set the user ID, otherwise this Cloudlet will not be executed in a
+	 * CloudResource.
 	 * 
 	 * @param id the user ID
 	 * @pre id >= 0
@@ -697,7 +663,8 @@ public class Cloudlet {
 	}
 
 	/**
-	 * Gets the input file size of this Cloudlet <tt>BEFORE</tt> submitting to a CloudResource.
+	 * Gets the input file size of this Cloudlet <tt>BEFORE</tt> submitting to a
+	 * CloudResource.
 	 * 
 	 * @return the input file size of this Cloudlet
 	 * @pre $none
@@ -708,8 +675,8 @@ public class Cloudlet {
 	}
 
 	/**
-	 * Gets the output size of this Cloudlet <tt>AFTER</tt> submitting and executing to a
-	 * CloudResource.
+	 * Gets the output size of this Cloudlet <tt>AFTER</tt> submitting and executing
+	 * to a CloudResource.
 	 * 
 	 * @return the Cloudlet output file size
 	 * @pre $none
@@ -720,12 +687,13 @@ public class Cloudlet {
 	}
 
 	/**
-	 * Sets the resource parameters for which this Cloudlet is going to be executed. <br>
-	 * NOTE: This method <tt>should</tt> be called only by a resource entity, not the user or owner
-	 * of this Cloudlet.
+	 * Sets the resource parameters for which this Cloudlet is going to be executed.
+	 * <br>
+	 * NOTE: This method <tt>should</tt> be called only by a resource entity, not
+	 * the user or owner of this Cloudlet.
 	 * 
 	 * @param resourceID the CloudResource ID
-	 * @param cost the cost running this CloudResource per second
+	 * @param cost       the cost running this CloudResource per second
 	 * @pre resourceID >= 0
 	 * @pre cost > 0.0
 	 * @post $none
@@ -740,16 +708,16 @@ public class Cloudlet {
 		resList.add(res);
 
 		if (index == -1 && record) {
-			write("Allocates this Cloudlet to " + res.resourceName + " (ID #" + resourceID
-					+ ") with cost = $" + cost + "/sec");
+			write("Allocates this Cloudlet to " + res.resourceName + " (ID #" + resourceID + ") with cost = $" + cost
+					+ "/sec");
 		} else if (record) {
 			final int id = resList.get(index).resourceId;
 			final String name = resList.get(index).resourceName;
-			write("Moves Cloudlet from " + name + " (ID #" + id + ") to " + res.resourceName + " (ID #"
-					+ resourceID + ") with cost = $" + cost + "/sec");
+			write("Moves Cloudlet from " + name + " (ID #" + id + ") to " + res.resourceName + " (ID #" + resourceID
+					+ ") with cost = $" + cost + "/sec");
 		}
 
-		index++;  // initially, index = -1
+		index++; // initially, index = -1
 	}
 
 	/**
@@ -773,7 +741,8 @@ public class Cloudlet {
 	}
 
 	/**
-	 * Gets the submission or arrival time of this Cloudlet from the latest CloudResource.
+	 * Gets the submission or arrival time of this Cloudlet from the latest
+	 * CloudResource.
 	 * 
 	 * @return the submission time or <tt>0.0</tt> if none
 	 * @pre $none
@@ -787,10 +756,10 @@ public class Cloudlet {
 	}
 
 	/**
-	 * Sets the execution start time of this Cloudlet inside a CloudResource. <b>NOTE:</b> With new
-	 * functionalities, such as being able to cancel / to pause / to resume this Cloudlet, the
-	 * execution start time only holds the latest one. Meaning, all previous execution start time
-	 * are ignored.
+	 * Sets the execution start time of this Cloudlet inside a CloudResource.
+	 * <b>NOTE:</b> With new functionalities, such as being able to cancel / to
+	 * pause / to resume this Cloudlet, the execution start time only holds the
+	 * latest one. Meaning, all previous execution start time are ignored.
 	 * 
 	 * @param clockTime the latest execution start time
 	 * @pre clockTime >= 0.0
@@ -815,12 +784,14 @@ public class Cloudlet {
 	}
 
 	/**
-	 * Sets this Cloudlet's execution parameters. These parameters are set by the CloudResource
-	 * before departure or sending back to the original Cloudlet's owner.
+	 * Sets this Cloudlet's execution parameters. These parameters are set by the
+	 * CloudResource before departure or sending back to the original Cloudlet's
+	 * owner.
 	 * 
-	 * @param wallTime the time of this Cloudlet resides in a CloudResource (from arrival time until
-	 *            departure time).
-	 * @param actualTime the total execution time of this Cloudlet in a CloudResource.
+	 * @param wallTime   the time of this Cloudlet resides in a CloudResource (from
+	 *                   arrival time until departure time).
+	 * @param actualTime the total execution time of this Cloudlet in a
+	 *                   CloudResource.
 	 * @pre wallTime >= 0.0
 	 * @pre actualTime >= 0.0
 	 * @post $none
@@ -856,8 +827,7 @@ public class Cloudlet {
 
 		// throws an exception if the new status is outside the range
 		if (newStatus < Cloudlet.CREATED || newStatus > Cloudlet.FAILED_RESOURCE_UNAVAILABLE) {
-			throw new Exception(
-					"Cloudlet.setCloudletStatus() : Error - Invalid integer range for Cloudlet status.");
+			throw new Exception("Cloudlet.setCloudletStatus() : Error - Invalid integer range for Cloudlet status.");
 		}
 
 		if (newStatus == Cloudlet.SUCCESS) {
@@ -886,7 +856,8 @@ public class Cloudlet {
 	/**
 	 * Gets the string representation of the current Cloudlet status code.
 	 * 
-	 * @return the Cloudlet status code as a string or <tt>null</tt> if the status code is unknown
+	 * @return the Cloudlet status code as a string or <tt>null</tt> if the status
+	 *         code is unknown
 	 * @pre $none
 	 * @post $none
 	 */
@@ -898,55 +869,56 @@ public class Cloudlet {
 	 * Gets the string representation of the given Cloudlet status code.
 	 * 
 	 * @param status the Cloudlet status code
-	 * @return the Cloudlet status code as a string or <tt>null</tt> if the status code is unknown
+	 * @return the Cloudlet status code as a string or <tt>null</tt> if the status
+	 *         code is unknown
 	 * @pre $none
 	 * @post $none
 	 */
 	public static String getStatusString(final int status) {
 		String statusString = null;
 		switch (status) {
-			case Cloudlet.CREATED:
-				statusString = "Created";
-				break;
+		case Cloudlet.CREATED:
+			statusString = "Created";
+			break;
 
-			case Cloudlet.READY:
-				statusString = "Ready";
-				break;
+		case Cloudlet.READY:
+			statusString = "Ready";
+			break;
 
-			case Cloudlet.INEXEC:
-				statusString = "InExec";
-				break;
+		case Cloudlet.INEXEC:
+			statusString = "InExec";
+			break;
 
-			case Cloudlet.SUCCESS:
-				statusString = "Success";
-				break;
+		case Cloudlet.SUCCESS:
+			statusString = "Success";
+			break;
 
-			case Cloudlet.QUEUED:
-				statusString = "Queued";
-				break;
+		case Cloudlet.QUEUED:
+			statusString = "Queued";
+			break;
 
-			case Cloudlet.FAILED:
-				statusString = "Failed";
-				break;
+		case Cloudlet.FAILED:
+			statusString = "Failed";
+			break;
 
-			case Cloudlet.CANCELED:
-				statusString = "Canceled";
-				break;
+		case Cloudlet.CANCELED:
+			statusString = "Canceled";
+			break;
 
-			case Cloudlet.PAUSED:
-				statusString = "Paused";
-				break;
+		case Cloudlet.PAUSED:
+			statusString = "Paused";
+			break;
 
-			case Cloudlet.RESUMED:
-				statusString = "Resumed";
-				break;
+		case Cloudlet.RESUMED:
+			statusString = "Resumed";
+			break;
 
-			case Cloudlet.FAILED_RESOURCE_UNAVAILABLE:
-				statusString = "Failed_resource_unavailable";
-				break;
+		case Cloudlet.FAILED_RESOURCE_UNAVAILABLE:
+			statusString = "Failed_resource_unavailable";
+			break;
 
-			default:
-				break;
+		default:
+			break;
 		}
 
 		return statusString;
@@ -977,7 +949,8 @@ public class Cloudlet {
 	/**
 	 * Gets the cost running this Cloudlet in the latest CloudResource.
 	 * 
-	 * @return the cost associated with running this Cloudlet or <tt>0.0</tt> if none
+	 * @return the cost associated with running this Cloudlet or <tt>0.0</tt> if
+	 *         none
 	 * @pre $none
 	 * @post $result >= 0.0
 	 */
@@ -989,8 +962,8 @@ public class Cloudlet {
 	}
 
 	/**
-	 * Gets the time of this Cloudlet resides in the latest CloudResource (from arrival time until
-	 * departure time).
+	 * Gets the time of this Cloudlet resides in the latest CloudResource (from
+	 * arrival time until departure time).
 	 * 
 	 * @return the time of this Cloudlet resides in a CloudResource
 	 * @pre $none
@@ -1049,8 +1022,8 @@ public class Cloudlet {
 	 * Gets the total execution time of this Cloudlet in a given CloudResource ID.
 	 * 
 	 * @param resId a CloudResource entity ID
-	 * @return the total execution time of this Cloudlet in a CloudResource or <tt>0.0</tt> if not
-	 *         found
+	 * @return the total execution time of this Cloudlet in a CloudResource or
+	 *         <tt>0.0</tt> if not found
 	 * @pre resId >= 0
 	 * @post $result >= 0.0
 	 */
@@ -1066,7 +1039,8 @@ public class Cloudlet {
 	 * Gets the cost running this Cloudlet in a given CloudResource ID.
 	 * 
 	 * @param resId a CloudResource entity ID
-	 * @return the cost associated with running this Cloudlet or <tt>0.0</tt> if not found
+	 * @return the cost associated with running this Cloudlet or <tt>0.0</tt> if not
+	 *         found
 	 * @pre resId >= 0
 	 * @post $result >= 0.0
 	 */
@@ -1079,13 +1053,13 @@ public class Cloudlet {
 	}
 
 	/**
-	 * Gets the length of this Cloudlet that has been executed so far in a given CloudResource ID.
-	 * This method is useful when trying to move this Cloudlet into different CloudResources or to
-	 * cancel it.
+	 * Gets the length of this Cloudlet that has been executed so far in a given
+	 * CloudResource ID. This method is useful when trying to move this Cloudlet
+	 * into different CloudResources or to cancel it.
 	 * 
 	 * @param resId a CloudResource entity ID
-	 * @return the length of a partially executed Cloudlet or the full Cloudlet length if it is
-	 *         completed or <tt>0.0</tt> if not found
+	 * @return the length of a partially executed Cloudlet or the full Cloudlet
+	 *         length if it is completed or <tt>0.0</tt> if not found
 	 * @pre resId >= 0
 	 * @post $result >= 0.0
 	 */
@@ -1098,7 +1072,8 @@ public class Cloudlet {
 	}
 
 	/**
-	 * Gets the submission or arrival time of this Cloudlet in the given CloudResource ID.
+	 * Gets the submission or arrival time of this Cloudlet in the given
+	 * CloudResource ID.
 	 * 
 	 * @param resId a CloudResource entity ID
 	 * @return the submission time or <tt>0.0</tt> if not found
@@ -1114,11 +1089,12 @@ public class Cloudlet {
 	}
 
 	/**
-	 * Gets the time of this Cloudlet resides in a given CloudResource ID (from arrival time until
-	 * departure time).
+	 * Gets the time of this Cloudlet resides in a given CloudResource ID (from
+	 * arrival time until departure time).
 	 * 
 	 * @param resId a CloudResource entity ID
-	 * @return the time of this Cloudlet resides in the CloudResource or <tt>0.0</tt> if not found
+	 * @return the time of this Cloudlet resides in the CloudResource or
+	 *         <tt>0.0</tt> if not found
 	 * @pre resId >= 0
 	 * @post $result >= 0.0
 	 */
@@ -1164,7 +1140,8 @@ public class Cloudlet {
 	/**
 	 * Gets the finish time of this Cloudlet in a CloudResource.
 	 * 
-	 * @return the finish or completion time of this Cloudlet or <tt>-1</tt> if not finished yet.
+	 * @return the finish or completion time of this Cloudlet or <tt>-1</tt> if not
+	 *         finished yet.
 	 * @pre $none
 	 * @post $result >= -1
 	 */
@@ -1262,13 +1239,14 @@ public class Cloudlet {
 	}
 
 	/**
-	 * Sets the resource parameters for which this Cloudlet is going to be executed. <br>
-	 * NOTE: This method <tt>should</tt> be called only by a resource entity, not the user or owner
-	 * of this Cloudlet.
+	 * Sets the resource parameters for which this Cloudlet is going to be executed.
+	 * <br>
+	 * NOTE: This method <tt>should</tt> be called only by a resource entity, not
+	 * the user or owner of this Cloudlet.
 	 * 
 	 * @param resourceID the CloudResource ID
 	 * @param costPerCPU the cost running this Cloudlet per second
-	 * @param costPerBw the cost of data transfer to this PowerDatacenter
+	 * @param costPerBw  the cost of data transfer to this PowerDatacenter
 	 * @pre resourceID >= 0
 	 * @pre cost > 0.0
 	 * @post $none
@@ -1282,7 +1260,8 @@ public class Cloudlet {
 
 	/**
 	 * Gets the total cost of processing or executing this Cloudlet
-	 * <tt>Processing Cost = input data transfer + processing cost + output transfer cost</tt> .
+	 * <tt>Processing Cost = input data transfer + processing cost + output transfer cost</tt>
+	 * .
 	 * 
 	 * @return the total cost of processing Cloudlet
 	 * @pre $none

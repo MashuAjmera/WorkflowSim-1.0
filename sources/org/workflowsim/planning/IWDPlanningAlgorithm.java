@@ -16,19 +16,15 @@
 package org.workflowsim.planning;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.cloudbus.cloudsim.Consts;
 import org.cloudbus.cloudsim.Log;
 import org.workflowsim.CondorVM;
-import org.workflowsim.FileItem;
 import org.workflowsim.Task;
-import org.workflowsim.utils.Parameters;
 
 /**
  * The HEFT planning algorithm.
@@ -196,10 +192,10 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 		// Prioritization phase
 		calculateComputationCosts();
 		calculateTransferCosts();
-		calculateRanks();
+//		calculateRanks();
 
 		// Selection phase
-		allocateTasks();
+//		allocateTasks();
 	}
 
 	/**
@@ -284,7 +280,7 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 				int n = child.getCloudletId();
 				g.addEdge(m, n);
 
-				transferCosts.get(parent).put(child, calculateTransferCost(parent, child));
+//				transferCosts.get(parent).put(child, calculateTransferCost(parent, child));
 			}
 		}
 
@@ -296,11 +292,12 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 		m = g.bpath(0, g);
 		t = m.get(m.size() - 1);
 		System.out.println(g.bpath(0, g) + "\n");
+		int priority = 1000;
 		while (t != 0) {
 
 			System.out.println("TTT" + t);
 			m = g.bpath(0, g);
-			int priority = 1000;
+
 			for (int j = 0; j < m.size(); j++) {
 
 				// Printing the iterated value
@@ -312,8 +309,8 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 					continue;
 				}
 				Task t3 = gettask(x);
-				if (t3.getPriority() != 0) {
-					t3.setPriority(priority);
+				if (t3.getCloudletPriority() == 0) {
+					t3.setCloudletPriority(priority);
 					priority = priority - 1;
 				}
 			}
@@ -323,6 +320,18 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 			g.removeEdge(t);
 
 		}
+		List<Task> tlist = new ArrayList<Task>();
+		tlist = getTaskList();
+		int[] arr = new int[25];
+		for (int i = 0; i < tlist.size(); i++) {
+			System.out.println(
+					"Task ID " + tlist.get(i).getCloudletId() + " Task Priority " + tlist.get(i).getCloudletPriority());
+			arr[i] = tlist.get(i).getCloudletPriority();
+		}
+		for (int i = 0; i < 25; i++) {
+			System.out.print(arr[i] + ", ");
+		}
+		System.out.println();
 
 	}
 
@@ -334,40 +343,40 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 	 * @param child
 	 * @return Transfer cost in seconds
 	 */
-	private double calculateTransferCost(Task parent, Task child) {
-		List<FileItem> parentFiles = parent.getFileList();
-		List<FileItem> childFiles = child.getFileList();
-
-		double acc = 0.0;
-
-		for (FileItem parentFile : parentFiles) {
-			if (parentFile.getType() != Parameters.FileType.OUTPUT) {
-				continue;
-			}
-
-			for (FileItem childFile : childFiles) {
-				if (childFile.getType() == Parameters.FileType.INPUT
-						&& childFile.getName().equals(parentFile.getName())) {
-					acc += childFile.getSize();
-					break;
-				}
-			}
-		}
-
-		// file Size is in Bytes, acc in MB
-		acc = acc / Consts.MILLION;
-		// acc in MB, averageBandwidth in Mb/s
-		return acc * 8 / averageBandwidth;
-	}
+//	private double calculateTransferCost(Task parent, Task child) {
+//		List<FileItem> parentFiles = parent.getFileList();
+//		List<FileItem> childFiles = child.getFileList();
+//
+//		double acc = 0.0;
+//
+//		for (FileItem parentFile : parentFiles) {
+//			if (parentFile.getType() != Parameters.FileType.OUTPUT) {
+//				continue;
+//			}
+//
+//			for (FileItem childFile : childFiles) {
+//				if (childFile.getType() == Parameters.FileType.INPUT
+//						&& childFile.getName().equals(parentFile.getName())) {
+//					acc += childFile.getSize();
+//					break;
+//				}
+//			}
+//		}
+//
+//		// file Size is in Bytes, acc in MB
+//		acc = acc / Consts.MILLION;
+//		// acc in MB, averageBandwidth in Mb/s
+//		return acc * 8 / averageBandwidth;
+//	}
 
 	/**
-	 * Invokes calculateRank for each task to be scheduled
+	 * Invokes calculateRank for each task to be scheduled //
 	 */
-	private void calculateRanks() {
-		for (Task task : getTaskList()) {
-			calculateRank(task);
-		}
-	}
+//	private void calculateRanks() {
+//		for (Task task : getTaskList()) {
+//			calculateRank(task);
+//		}
+//	}
 
 	/**
 	 * Populates rank.get(task) with the rank of task as defined in the HEFT paper.
@@ -375,46 +384,46 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 	 * @param task The task have the rank calculates
 	 * @return The rank
 	 */
-	private double calculateRank(Task task) {
-		if (rank.containsKey(task)) {
-			return rank.get(task);
-		}
-
-		double averageComputationCost = 0.0;
-
-		for (Double cost : computationCosts.get(task).values()) {
-			averageComputationCost += cost;
-		}
-
-		averageComputationCost /= computationCosts.get(task).size();
-
-		double max = 0.0;
-		for (Task child : task.getChildList()) {
-			double childCost = transferCosts.get(task).get(child) + calculateRank(child);
-			max = Math.max(max, childCost);
-		}
-
-		rank.put(task, averageComputationCost + max);
-
-		return rank.get(task);
-	}
+//	private double calculateRank(Task task) {
+//		if (rank.containsKey(task)) {
+//			return rank.get(task);
+//		}
+//
+//		double averageComputationCost = 0.0;
+//
+//		for (Double cost : computationCosts.get(task).values()) {
+//			averageComputationCost += cost;
+//		}
+//
+//		averageComputationCost /= computationCosts.get(task).size();
+//
+//		double max = 0.0;
+//		for (Task child : task.getChildList()) {
+//			double childCost = transferCosts.get(task).get(child) + calculateRank(child);
+//			max = Math.max(max, childCost);
+//		}
+//
+//		rank.put(task, averageComputationCost + max);
+//
+//		return rank.get(task);
+//	}
 
 	/**
 	 * Allocates all tasks to be scheduled in non-ascending order of schedule.
 	 */
-	private void allocateTasks() {
-		List<TaskRank> taskRank = new ArrayList<>();
-		for (Task task : rank.keySet()) {
-			taskRank.add(new TaskRank(task, rank.get(task)));
-		}
-
-		// Sorting in non-ascending order of rank
-		Collections.sort(taskRank);
-		for (TaskRank rank : taskRank) {
-			allocateTask(rank.task);
-		}
-
-	}
+//	private void allocateTasks() {
+//		List<TaskRank> taskRank = new ArrayList<>();
+//		for (Task task : rank.keySet()) {
+//			taskRank.add(new TaskRank(task, rank.get(task)));
+//		}
+//
+//		// Sorting in non-ascending order of rank
+//		Collections.sort(taskRank);
+//		for (TaskRank rank : taskRank) {
+//			allocateTask(rank.task);
+//		}
+//
+//	}
 
 	/**
 	 * Schedules the task given in one of the VMs minimizing the earliest finish
@@ -423,38 +432,38 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 	 * @param task The task to be scheduled
 	 * @pre All parent tasks are already scheduled
 	 */
-	private void allocateTask(Task task) {
-		CondorVM chosenVM = null;
-		double earliestFinishTime = Double.MAX_VALUE;
-		double bestReadyTime = 0.0;
-		double finishTime;
-
-		for (Object vmObject : getVmList()) {
-			CondorVM vm = (CondorVM) vmObject;
-			double minReadyTime = 0.0;
-
-			for (Task parent : task.getParentList()) {
-				double readyTime = earliestFinishTimes.get(parent);
-				if (parent.getVmId() != vm.getId()) {
-					readyTime += transferCosts.get(parent).get(task);
-				}
-				minReadyTime = Math.max(minReadyTime, readyTime);
-			}
-
-			finishTime = findFinishTime(task, vm, minReadyTime, false);
-
-			if (finishTime < earliestFinishTime) {
-				bestReadyTime = minReadyTime;
-				earliestFinishTime = finishTime;
-				chosenVM = vm;
-			}
-		}
-
-		findFinishTime(task, chosenVM, bestReadyTime, true);
-		earliestFinishTimes.put(task, earliestFinishTime);
-
-		task.setVmId(chosenVM.getId());
-	}
+//	private void allocateTask(Task task) {
+//		CondorVM chosenVM = null;
+//		double earliestFinishTime = Double.MAX_VALUE;
+//		double bestReadyTime = 0.0;
+//		double finishTime;
+//
+//		for (Object vmObject : getVmList()) {
+//			CondorVM vm = (CondorVM) vmObject;
+//			double minReadyTime = 0.0;
+//
+//			for (Task parent : task.getParentList()) {
+//				double readyTime = earliestFinishTimes.get(parent);
+//				if (parent.getVmId() != vm.getId()) {
+//					readyTime += transferCosts.get(parent).get(task);
+//				}
+//				minReadyTime = Math.max(minReadyTime, readyTime);
+//			}
+//
+//			finishTime = findFinishTime(task, vm, minReadyTime, false);
+//
+//			if (finishTime < earliestFinishTime) {
+//				bestReadyTime = minReadyTime;
+//				earliestFinishTime = finishTime;
+//				chosenVM = vm;
+//			}
+//		}
+//
+//		findFinishTime(task, chosenVM, bestReadyTime, true);
+//		earliestFinishTimes.put(task, earliestFinishTime);
+//
+//		task.setVmId(chosenVM.getId());
+//	}
 
 	/**
 	 * Finds the best time slot available to minimize the finish time of the given
@@ -467,76 +476,76 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 	 * @param occupySlot If true, reserves the time slot in the schedule.
 	 * @return The minimal finish time of the task in the vmn
 	 */
-	private double findFinishTime(Task task, CondorVM vm, double readyTime, boolean occupySlot) {
-		List<Event> sched = schedules.get(vm);
-		double computationCost = computationCosts.get(task).get(vm);
-		double start, finish;
-		int pos;
-
-		if (sched.isEmpty()) {
-			if (occupySlot) {
-				sched.add(new Event(readyTime, readyTime + computationCost));
-			}
-			return readyTime + computationCost;
-		}
-
-		if (sched.size() == 1) {
-			if (readyTime >= sched.get(0).finish) {
-				pos = 1;
-				start = readyTime;
-			} else if (readyTime + computationCost <= sched.get(0).start) {
-				pos = 0;
-				start = readyTime;
-			} else {
-				pos = 1;
-				start = sched.get(0).finish;
-			}
-
-			if (occupySlot) {
-				sched.add(pos, new Event(start, start + computationCost));
-			}
-			return start + computationCost;
-		}
-
-		// Trivial case: Start after the latest task scheduled
-		start = Math.max(readyTime, sched.get(sched.size() - 1).finish);
-		finish = start + computationCost;
-		int i = sched.size() - 1;
-		int j = sched.size() - 2;
-		pos = i + 1;
-		while (j >= 0) {
-			Event current = sched.get(i);
-			Event previous = sched.get(j);
-
-			if (readyTime > previous.finish) {
-				if (readyTime + computationCost <= current.start) {
-					start = readyTime;
-					finish = readyTime + computationCost;
-				}
-
-				break;
-			}
-			if (previous.finish + computationCost <= current.start) {
-				start = previous.finish;
-				finish = previous.finish + computationCost;
-				pos = i;
-			}
-			i--;
-			j--;
-		}
-
-		if (readyTime + computationCost <= sched.get(0).start) {
-			pos = 0;
-			start = readyTime;
-
-			if (occupySlot) {
-				sched.add(pos, new Event(start, start + computationCost));
-			}
-			return start + computationCost;
-		}
-		if (occupySlot) {
-			sched.add(pos, new Event(start, finish));
-		}
-		return finish;
-	}
+//	private double findFinishTime(Task task, CondorVM vm, double readyTime, boolean occupySlot) {
+//		List<Event> sched = schedules.get(vm);
+//		double computationCost = computationCosts.get(task).get(vm);
+//		double start, finish;
+//		int pos;
+//
+//		if (sched.isEmpty()) {
+//			if (occupySlot) {
+//				sched.add(new Event(readyTime, readyTime + computationCost));
+//			}
+//			return readyTime + computationCost;
+//		}
+//
+//		if (sched.size() == 1) {
+//			if (readyTime >= sched.get(0).finish) {
+//				pos = 1;
+//				start = readyTime;
+//			} else if (readyTime + computationCost <= sched.get(0).start) {
+//				pos = 0;
+//				start = readyTime;
+//			} else {
+//				pos = 1;
+//				start = sched.get(0).finish;
+//			}
+//
+//			if (occupySlot) {
+//				sched.add(pos, new Event(start, start + computationCost));
+//			}
+//			return start + computationCost;
+//		}
+//
+//		// Trivial case: Start after the latest task scheduled
+//		start = Math.max(readyTime, sched.get(sched.size() - 1).finish);
+//		finish = start + computationCost;
+//		int i = sched.size() - 1;
+//		int j = sched.size() - 2;
+//		pos = i + 1;
+//		while (j >= 0) {
+//			Event current = sched.get(i);
+//			Event previous = sched.get(j);
+//
+//			if (readyTime > previous.finish) {
+//				if (readyTime + computationCost <= current.start) {
+//					start = readyTime;
+//					finish = readyTime + computationCost;
+//				}
+//
+//				break;
+//			}
+//			if (previous.finish + computationCost <= current.start) {
+//				start = previous.finish;
+//				finish = previous.finish + computationCost;
+//				pos = i;
+//			}
+//			i--;
+//			j--;
+//		}
+//
+//		if (readyTime + computationCost <= sched.get(0).start) {
+//			pos = 0;
+//			start = readyTime;
+//
+//			if (occupySlot) {
+//				sched.add(pos, new Event(start, start + computationCost));
+//			}
+//			return start + computationCost;
+//		}
+//		if (occupySlot) {
+//			sched.add(pos, new Event(start, finish));
+//		}
+//		return finish;
+//	}
 }
