@@ -91,7 +91,7 @@ public class IWDAlgorithmExample1 {
 			/**
 			 * Should change this based on real physical path
 			 */
-			String daxPath = "config/dax/Montage_100.xml";
+			String daxPath = "config/dax/Montage_25.xml";
 
 			File daxFile = new File(daxPath);
 			if (!daxFile.exists()) {
@@ -106,7 +106,7 @@ public class IWDAlgorithmExample1 {
 			 */
 
 			Parameters.PlanningAlgorithm pln_method = Parameters.PlanningAlgorithm.IWD;
-			Parameters.SchedulingAlgorithm sch_method = Parameters.SchedulingAlgorithm.MAXMIN;
+			Parameters.SchedulingAlgorithm sch_method = Parameters.SchedulingAlgorithm.IWD;
 			ReplicaCatalog.FileSystem file_system = ReplicaCatalog.FileSystem.LOCAL;
 
 			/**
