@@ -265,8 +265,9 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 			}
 			transferCosts.put(task1, taskTransferCosts);
 		}
-		int t;
+		int t,lenght;
 		t = getTaskList().size();
+		lenght=t;
 		Graph g = new Graph(t + 1);
 		for (Task parent : getTaskList()) {
 			
@@ -324,13 +325,13 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 		}
 		List<Task> tlist = new ArrayList<Task>();
 		tlist = getTaskList();
-		int[] arr = new int[25];
+		int[] arr = new int[lenght];
 		for (int i = 0; i < tlist.size(); i++) {
 			System.out.println(
 					"Task ID " + tlist.get(i).getCloudletId() + " Task Priority " + tlist.get(i).getCloudletPriority());
 			arr[i] = tlist.get(i).getCloudletPriority();
 		}
-		for (int i = 0; i < 25; i++) {
+		for (int i = 0; i < lenght; i++) {
 			System.out.print(arr[i] + ", ");
 		}
 		System.out.println();
