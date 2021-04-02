@@ -48,6 +48,7 @@ public class IWDSchedulingAlgorithm extends BaseSchedulingAlgorithm {
 	@Override
 	public void run() {
 
+		
 		int[] priority = Cloudlet.getArray();
 
 //		for (int l = 0; l < priority.length; l++) {
@@ -70,8 +71,6 @@ public class IWDSchedulingAlgorithm extends BaseSchedulingAlgorithm {
 				if (!hasChecked.get(j)) {
 					maxCloudlet = cloudlet;
 					int m = cloudlet.getCloudletId();
-					System.out.println("Hello " + m);
-					System.out.println("MaxUntilHere " + priority[m]);
 
 					maxIndex = j;
 					break;
@@ -118,8 +117,6 @@ public class IWDSchedulingAlgorithm extends BaseSchedulingAlgorithm {
 			firstIdleVm.setState(WorkflowSimTags.VM_STATUS_BUSY);
 			maxCloudlet.setVmId(firstIdleVm.getId());
 			getScheduledList().add(maxCloudlet);
-			Log.printLine("Schedules " + maxCloudlet.getCloudletId() + " with " + maxCloudlet.getCloudletPriority()
-					+ " to VM " + firstIdleVm.getId() + " with " + firstIdleVm.getCurrentRequestedTotalMips());
 
 		}
 	}

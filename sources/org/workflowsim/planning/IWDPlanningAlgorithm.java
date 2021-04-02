@@ -28,7 +28,7 @@ import org.workflowsim.Task;
 /**
  * The HEFT planning algorithm.
  *
- * @author Pedro Paulo Vezz� Campos
+ * @author Pedro Paulo Vezzï¿½ Campos
  * @date Oct 12, 2013
  */
 public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
@@ -158,20 +158,20 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 	public void run() {
 		Log.printLine("IWD planner running with " + getTaskList().size() + " tasks.");
 
-//		averageBandwidth = calculateAverageBandwidth();
+		// averageBandwidth = calculateAverageBandwidth();
 
 		for (Object vmObject : getVmList()) {
 			CondorVM vm = (CondorVM) vmObject;
-//			schedules.put(vm, new ArrayList<>());
+			// schedules.put(vm, new ArrayList<>());
 		}
 
 		// Prioritization phase
-//		calculateComputationCosts();
+		// calculateComputationCosts();
 		calculateBestPath();
-//		calculateRanks();
+		// calculateRanks();
 
 		// Selection phase
-//		allocateTasks();
+		// allocateTasks();
 	}
 
 	public Task gettask(int a) {
@@ -236,7 +236,7 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 			for (int j = 1; j < m.size(); j++) {
 
 				int x = m.get(j);
-//				System.out.println("\nUsing ListIterator:\n" + x + "EYEE " + j);
+				// System.out.println("\nUsing ListIterator:\n" + x + "EYEE " + j);
 				if (x == 0) {
 					continue;
 				}
@@ -256,11 +256,11 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 		List<Task> tlist = new ArrayList<Task>();
 		tlist = getTaskList();
 		int[] arr = new int[lenght + 1];
-//		System.out.println("LENGTHHH" + lenght);
+		// System.out.println("LENGTHHH" + lenght);
 		arr[0] = 0;
 		for (int i = 0; i < tlist.size(); i++) {
-			System.out.println(
-					"Task ID " + tlist.get(i).getCloudletId() + " Task Priority " + tlist.get(i).getCloudletPriority());
+			System.out
+					.println("Task ID " + tlist.get(i).getCloudletId() + " Task Priority " + tlist.get(i).getCloudletPriority());
 			arr[i + 1] = tlist.get(i).getCloudletPriority();
 		}
 		arr[0] = 0;
