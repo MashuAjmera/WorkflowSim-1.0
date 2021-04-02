@@ -47,6 +47,25 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 		public int count;
 
 		private LinkedList<Integer> adj[];
+		
+		public Task gettask(int a) {
+			Task returnTask = null;
+			for (Task parent : getTaskList()) {
+
+				int m = parent.getCloudletId();
+				for (Task child : parent.getChildList()) {
+					int n = child.getCloudletId();
+					if (m == a) {
+						returnTask = parent;
+					}
+					if (n == a) {
+						returnTask = child;
+					}
+				}
+			}
+			return returnTask;
+
+		}
 
 		@SuppressWarnings("unchecked")
 		Graph(int v) {
@@ -106,11 +125,12 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 				int m1 = -1, m2 = -1;
 				Iterator<Integer> i = m.listIterator();
 				while (i.hasNext()) {
-					int n = i.next();
-					int t = g.childs(n).size();
+					float n = i.next();
+					int q=(int)n;
+					float t = (g.childs(q).size()/gettask(q).getCloudletLength());
 					if (t >= m1) {
-						m1 = t;
-						m2 = n;
+						m1 = (int)t;
+						m2 = (int)n;
 					}
 
 				}
@@ -236,7 +256,6 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 	 * files from each parent to each child
 	 */
 	public Task gettask(int a) {
-		System.out.println("Gettask input " + a);
 		Task returnTask = null;
 		for (Task parent : getTaskList()) {
 
@@ -280,6 +299,7 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 			int m = parent.getCloudletId();
 			for (Task child : parent.getChildList()) {
 				int n = child.getCloudletId();
+				System.out.println("file size of cloudid"+n+" " + child.getCloudletLength() +"......");
 				g.addEdge(m, n);
 				
 
@@ -294,11 +314,9 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 		m = g.childs(0);
 		m = g.bpath(0, g);
 		t = m.get(m.size() - 1);
-		System.out.println(g.bpath(0, g) + "\n");
 		int priority = 1000;
 		while (m.size() != 1) {
 
-			System.out.println("TTT" + t);
 			m = g.bpath(0, g);
 
 			for (int j = 1; j < m.size(); j++) {
@@ -307,7 +325,6 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 
 				// it = it.next();
 				int x = m.get(j);
-				System.out.println("\nUsing ListIterator:\n" + x + "EYEE " + j);
 				if (x == 0) {
 					continue;
 				}
@@ -318,7 +335,6 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 				}
 			}
 
-			System.out.println(m + "\n");
 			t = m.get(m.size() - 1);
 			g.removeEdge(t);
 

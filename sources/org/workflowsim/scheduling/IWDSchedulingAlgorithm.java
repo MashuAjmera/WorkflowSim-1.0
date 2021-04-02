@@ -48,7 +48,7 @@ public class IWDSchedulingAlgorithm extends BaseSchedulingAlgorithm {
 	@Override
 	public void run() {
 
-		int[] priority = { 0,949, 993, 937, 966, 946, 901, 953, 968, 970, 915, 961, 932, 963, 972, 902, 909, 903, 910, 918, 925, 934, 911, 919, 935, 943, 950, 956, 964, 973, 912, 904, 921, 927, 938, 944, 920, 907, 922, 974, 975, 928, 929, 940, 947, 952, 942, 926, 951, 906, 939, 954, 905, 913, 955, 914, 976, 957, 916, 958, 923, 930, 960, 948, 959, 924, 945, 917, 933, 992, 941, 967, 962, 971, 936, 965, 969, 931, 908, 991, 1000, 977, 978, 979, 980, 981, 982, 983, 984, 985, 986, 987, 988, 989, 990, 994, 999, 998, 997, 996, 995 };
+		int[] priority = { 0,901, 902, 903, 904, 905, 906, 907, 908, 909, 910, 911, 912, 913, 914, 915, 916, 917, 918, 919, 920, 921, 922, 923, 924, 925, 926, 927, 928, 929, 930, 931, 932, 933, 934, 935, 936, 937, 938, 939, 940, 941, 942, 943, 944, 945, 946, 947, 948, 949, 950, 951, 952, 953, 954, 955, 956, 957, 958, 959, 960, 961, 962, 963, 964, 965, 966, 967, 968, 969, 970, 971, 972, 973, 974, 975, 976, 977, 978, 979, 980, 981, 982, 983, 984, 985, 986, 987, 988, 989, 990, 991, 992, 993, 994, 995, 996, 997, 998, 999, 1000,};
 
 		// Log.printLine("Schedulin Cycle");
 		int size = getCloudletList().size();
@@ -65,8 +65,6 @@ public class IWDSchedulingAlgorithm extends BaseSchedulingAlgorithm {
 				if (!hasChecked.get(j)) {
 					maxCloudlet = cloudlet;
 					int m = cloudlet.getCloudletId();
-					System.out.println("Hello " + m);
-					System.out.println("MaxUntilHere " + priority[m]);
 
 					maxIndex = j;
 					break;
@@ -113,8 +111,6 @@ public class IWDSchedulingAlgorithm extends BaseSchedulingAlgorithm {
 			firstIdleVm.setState(WorkflowSimTags.VM_STATUS_BUSY);
 			maxCloudlet.setVmId(firstIdleVm.getId());
 			getScheduledList().add(maxCloudlet);
-			Log.printLine("Schedules " + maxCloudlet.getCloudletId() + " with " + maxCloudlet.getCloudletPriority()
-					+ " to VM " + firstIdleVm.getId() + " with " + firstIdleVm.getCurrentRequestedTotalMips());
 
 		}
 	}

@@ -106,7 +106,7 @@ public class IWDAlgorithmExample1 {
 			 */
 
 			Parameters.PlanningAlgorithm pln_method = Parameters.PlanningAlgorithm.IWD;
-			Parameters.SchedulingAlgorithm sch_method = Parameters.SchedulingAlgorithm.MAXMIN;
+			Parameters.SchedulingAlgorithm sch_method = Parameters.SchedulingAlgorithm.IWD;
 			ReplicaCatalog.FileSystem file_system = ReplicaCatalog.FileSystem.LOCAL;
 
 			/**
