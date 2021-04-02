@@ -93,10 +93,11 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 				}
 			}
 		}
+
 		public void setedgeweights() {
 			for (int i = 0; i < V; i++) {
 				for (int j = 0; j < adj[i].size(); j++) {
-					adj[i].get(j).weight = 1 + 2*childs(j).size();
+					adj[i].get(j).weight = 1 + 2 * childs(j).size();
 				}
 			}
 		}
@@ -209,10 +210,9 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 		int wt = 1;
 		Graph g = new Graph(t + 1);
 		for (Task parent : getTaskList()) {
-			if (parent.getParentList().size()==0)
-			{
-			int m = parent.getCloudletId();
-			g.addEdge(0, m, wt);
+			if (parent.getParentList().size() == 0) {
+				int m = parent.getCloudletId();
+				g.addEdge(0, m, wt);
 			}
 		}
 
@@ -235,50 +235,44 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 		m = g.childs(0);
 		int priority = lenght;
 		System.out.println(m);
-		while (m.size() > 1) {
-			double count=0;
+		while (m.size() > 1 && priority > 0) {
+			double count = 0;
 			for (int j = 0; j < m.size(); j++) {
 
 				int x = g.getWeight(0, m.get(j));
-				count=count+x;
+				count = count + x;
 				// System.out.println("\nUsing ListIterator:\n" + x + "EYEE " + j);
-				
+
 			}
 			System.out.println(count);
-			double x= Math.random();
-			double count2=0;
+			double x = Math.random();
+			double count2 = 0;
 			for (int j = 0; j < m.size(); j++) {
-				double prob=g.getWeight(0, m.get(j))/count;
+				double prob = g.getWeight(0, m.get(j)) / count;
 				System.out.println(prob);
-				if (x >=count2 && x<= count2+prob){
+				if (x >= count2 && x <= count2 + prob) {
 					System.out.println("YESssssssssss");
-			
-				Task t3 = gettask(m.get(j));
-				if (t3.getCloudletPriority() == 0) {
-					t3.setCloudletPriority(priority);
-					
-					priority = priority - 1;
-					int r = m.get(j);
-					m=g.childs(r);
-					
-					
-					
-					
-					
-					System.out.println(m.size());
-					for (int j1 = 0; j1 < m.size(); j1++) {
-						System.out.println("YES");
-						
-					
-					g.addEdge(0, m.get(j1), wt);
-					
+
+					Task t3 = gettask(m.get(j));
+					if (t3.getCloudletPriority() == 0) {
+						t3.setCloudletPriority(priority);
+
+						priority = priority - 1;
+						int r = m.get(j);
+						m = g.childs(r);
+
+						System.out.println(m.size());
+						for (int j1 = 0; j1 < m.size(); j1++) {
+							System.out.println("YES");
+
+							g.addEdge(0, m.get(j1), wt);
+
+						}
+						g.removeEdge(r);
+						break;
 					}
-					g.removeEdge(r);
-					break;
-				}
-				}
-				else 
-					count2=count2+prob;
+				} else
+					count2 = count2 + prob;
 			}
 			m = g.childs(0);
 
@@ -290,8 +284,8 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 		// System.out.println("LENGTHHH" + lenght);
 		arr[0] = 0;
 		for (int i = 0; i < tlist.size(); i++) {
-			System.out
-					.println("Task ID " + tlist.get(i).getCloudletId() + " Task Priority " + tlist.get(i).getCloudletPriority());
+			System.out.println(
+					"Task ID " + tlist.get(i).getCloudletId() + " Task Priority " + tlist.get(i).getCloudletPriority());
 			arr[i + 1] = tlist.get(i).getCloudletPriority();
 		}
 		arr[0] = 0;
