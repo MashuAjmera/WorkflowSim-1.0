@@ -26,12 +26,14 @@ import org.workflowsim.CondorVM;
 import org.workflowsim.Task;
 
 /**
- * The HEFT planning algorithm.
+ * The IWD planning algorithm.
  *
- * @author Pedro Paulo Vezz� Campos
+
+ * @author Pedro Paulo Vezzá Campos
  * @date Oct 12, 2013
  */
 public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
+
 
 	private class Graph {
 		private int V;
