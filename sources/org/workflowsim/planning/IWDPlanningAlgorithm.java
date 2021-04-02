@@ -33,29 +33,73 @@ import org.workflowsim.Task;
  */
 public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 
+	public class Edge {
+
+		private int weight;
+		private int dest; // Same thing here.
+
+		public Edge(int dest, int weight) {
+			this.weight = weight;
+			this.dest = dest;
+		}
+	}
+
 	private class Graph {
 		private int V;
 
-		private LinkedList<Integer> adj[];
+		private LinkedList<Edge> adj[];
 
 		@SuppressWarnings("unchecked")
 		Graph(int v) {
 			V = v;
 			adj = new LinkedList[v];
 			for (int i = 0; i < v; ++i)
-				adj[i] = new LinkedList();
+				adj[i] = new LinkedList<Edge>();
 		}
 
-		void addEdge(int v, int w) {
-			adj[v].add(w);
+		void addEdge(int v, int w, int wt) {
+			Edge edge = new Edge(w, wt);
+			adj[v].add(edge);
+		}
+
+		void modifyEdge(int v, int w, int wt) {
+			Edge edge = new Edge(w, wt);
+			int indexToRemove = 0;
+			for (int i = 0; i < adj[v].size(); i++) {
+				if (adj[v].get(i).dest == w) {
+					indexToRemove = adj[v].get(i).dest;
+				}
+			}
+			adj[v].remove(indexToRemove);
+			adj[v].add(edge);
+
+		}
+
+		int getWeight(int v, int w) {
+			int wt = 0;
+			for (int i = 0; i < adj[v].size(); i++) {
+				if (adj[v].get(i).dest == w) {
+					wt = adj[v].get(i).weight;
+					break;
+				}
+			}
+			return wt;
+		}
+
+		public void printWeight(Graph g) {
+			for (int i = 0; i < V; i++) {
+				for (int j = 0; j < adj[i].size(); j++) {
+					System.out.println("Weight at " + i + " to " + j + " : " + adj[i].get(j).weight);
+				}
+			}
 		}
 
 		public ArrayList<Integer> childs(int v) {
 			ArrayList<Integer> numbers = new ArrayList<Integer>();
-			Iterator<Integer> i = adj[v].listIterator();
+			Iterator<Edge> i = adj[v].listIterator();
 			while (i.hasNext()) {
-				int n = i.next();
-				numbers.add(n);
+				Edge n = i.next();
+				numbers.add(n.dest);
 			}
 
 			return numbers;
@@ -94,7 +138,7 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 		void removeEdge(int v) {
 			for (int i = 0; i < V; i++) {
 				for (int j = 0; j < adj[i].size(); j++) {
-					if (adj[i].get(j) == v) {
+					if (adj[i].get(j).dest == v) {
 						adj[i].remove(j);
 						break;
 					}
@@ -155,11 +199,12 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 		int t, lenght;
 		t = getTaskList().size();
 		lenght = t;
+		int wt = 1;
 		Graph g = new Graph(t + 1);
 		for (Task parent : getTaskList()) {
 
 			int m = parent.getCloudletId();
-			g.addEdge(0, m);
+			g.addEdge(0, m, wt);
 		}
 
 		// Calculating the actual values
@@ -167,10 +212,12 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 			int m = parent.getCloudletId();
 			for (Task child : parent.getChildList()) {
 				int n = child.getCloudletId();
-				g.addEdge(m, n);
+				g.addEdge(m, n, wt);
 
 			}
 		}
+
+		g.printWeight(g);
 
 		ArrayList<Integer> best_path = new ArrayList<Integer>();
 		best_path.add(0);
@@ -189,7 +236,7 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 			for (int j = 1; j < m.size(); j++) {
 
 				int x = m.get(j);
-				System.out.println("\nUsing ListIterator:\n" + x + "EYEE " + j);
+//				System.out.println("\nUsing ListIterator:\n" + x + "EYEE " + j);
 				if (x == 0) {
 					continue;
 				}
@@ -205,10 +252,11 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 			g.removeEdge(t);
 
 		}
+
 		List<Task> tlist = new ArrayList<Task>();
 		tlist = getTaskList();
 		int[] arr = new int[lenght + 1];
-		System.out.println("LENGTHHH" + lenght);
+//		System.out.println("LENGTHHH" + lenght);
 		arr[0] = 0;
 		for (int i = 0; i < tlist.size(); i++) {
 			System.out.println(
@@ -221,4 +269,5 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 		Cloudlet.setArray(arr);
 
 	}
+
 }
