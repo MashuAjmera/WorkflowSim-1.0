@@ -423,6 +423,16 @@ public class Cloudlet {
 		return this.priority;
 	}
 
+	public static int[] array;
+
+	public static void setArray(int[] arr) {
+		array = arr;
+	}
+
+	public static int[] getArray() {
+		return array;
+	}
+
 	/**
 	 * Sets the network service level for sending this cloudlet over a network.
 	 * 
