@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>MainRepo_WorkflowSim-1.0</name>
+	<name>WorkflowSim-main</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -16,7 +16,7 @@
 	</natures>
 	<filteredResources>
 		<filter>
-			<id>1616143042488</id>
+			<id>1617100642138</id>
 			<name></name>
 			<type>30</type>
 			<matcher>

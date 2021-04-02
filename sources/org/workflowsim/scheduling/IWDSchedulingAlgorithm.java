@@ -18,12 +18,11 @@ package org.workflowsim.scheduling;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.Log;
 import org.workflowsim.CondorVM;
-import org.workflowsim.Task;
 import org.workflowsim.WorkflowSimTags;
-import org.workflowsim.Task;
 
 /**
  * MaxMin algorithm.
@@ -34,82 +33,94 @@ import org.workflowsim.Task;
  */
 public class IWDSchedulingAlgorithm extends BaseSchedulingAlgorithm {
 
-    /**
-     * Initialize a MaxMin scheduler.
-     */
-    public IWDSchedulingAlgorithm() {
-        super();
-    }
+	/**
+	 * Initialize a MaxMin scheduler.
+	 */
+	public IWDSchedulingAlgorithm() {
+		super();
+	}
 
-    /**
-     * the check point list.
-     */
-    private final List<Boolean> hasChecked = new ArrayList<>();
+	/**
+	 * the check point list.
+	 */
+	private final List<Boolean> hasChecked = new ArrayList<>();
 
-    @Override
-    public void run() {
+	@Override
+	public void run() {
 
-        // Log.printLine("Schedulin Cycle");
-        int size = getCloudletList().size();
-        hasChecked.clear();
-        for (int t = 0; t < size; t++) {
-            hasChecked.add(false);
-        }
-        for (int i = 0; i < size; i++) {
-            int maxIndex = 0;
-            Cloudlet maxCloudlet = null;
-            for (int j = 0; j < size; j++) {
-                Cloudlet cloudlet = (Cloudlet) getCloudletList().get(j);
-                System.out.println(cloudlet.getCloudletId());
-                if (!hasChecked.get(j)) {
-                    maxCloudlet = cloudlet;
-                    maxIndex = j;
-                    break;
-                }
-            }
-            if (maxCloudlet == null) {
-                break;
-            }
+		int[] priority = Cloudlet.getArray();
 
-            for (int j = 0; j < size; j++) {
-                Cloudlet cloudlet = (Cloudlet) getCloudletList().get(j);
-                if (hasChecked.get(j)) {
-                    continue;
-                }
-                long length = cloudlet.getCloudletPriority();
-                if (length > maxCloudlet.getCloudletPriority()) {
-                    maxCloudlet = cloudlet;
-                    maxIndex = j;
-                }
-            }
-            hasChecked.set(maxIndex, true);
+//		for (int l = 0; l < priority.length; l++) {
+//			System.out.print(priority[l] + ", ");
+//		}
+//		System.out.println();
 
-            int vmSize = getVmList().size();
-            CondorVM firstIdleVm = null;// (CondorVM)getVmList().get(0);
-            for (int j = 0; j < vmSize; j++) {
-                CondorVM vm = (CondorVM) getVmList().get(j);
-                if (vm.getState() == WorkflowSimTags.VM_STATUS_IDLE) {
-                    firstIdleVm = vm;
-                    break;
-                }
-            }
-            if (firstIdleVm == null) {
-                break;
-            }
-            for (int j = 0; j < vmSize; j++) {
-                CondorVM vm = (CondorVM) getVmList().get(j);
-                if ((vm.getState() == WorkflowSimTags.VM_STATUS_IDLE)
-                        && vm.getCurrentRequestedTotalMips() > firstIdleVm.getCurrentRequestedTotalMips()) {
-                    firstIdleVm = vm;
+		// Log.printLine("Schedulin Cycle");
+		int size = getCloudletList().size();
+		hasChecked.clear();
+		for (int t = 0; t < size; t++) {
+			hasChecked.add(false);
+		}
+		for (int i = 0; i < size; i++) {
+			int maxIndex = 0;
+			Cloudlet maxCloudlet = null;
+			for (int j = 0; j < size; j++) {
+				Cloudlet cloudlet = (Cloudlet) getCloudletList().get(j);
+				System.out.println(cloudlet.getCloudletId());
+				if (!hasChecked.get(j)) {
+					maxCloudlet = cloudlet;
+					int m = cloudlet.getCloudletId();
+					System.out.println("Hello " + m);
+					System.out.println("MaxUntilHere " + priority[m]);
 
-                }
-            }
-            firstIdleVm.setState(WorkflowSimTags.VM_STATUS_BUSY);
-            maxCloudlet.setVmId(firstIdleVm.getId());
-            getScheduledList().add(maxCloudlet);
-            Log.printLine("Schedules " + maxCloudlet.getCloudletId() + " with " + maxCloudlet.getCloudletPriority()
-                    + " to VM " + firstIdleVm.getId() + " with " + firstIdleVm.getCurrentRequestedTotalMips());
+					maxIndex = j;
+					break;
+				}
+			}
+			if (maxCloudlet == null) {
+				break;
+			}
 
-        }
-    }
+			for (int j = 0; j < size; j++) {
+				Cloudlet cloudlet = (Cloudlet) getCloudletList().get(j);
+				if (hasChecked.get(j)) {
+					continue;
+				}
+				long length = priority[cloudlet.getCloudletId()];
+				if (length > priority[maxCloudlet.getCloudletId()]) {
+
+					maxCloudlet = cloudlet;
+					maxIndex = j;
+				}
+			}
+			hasChecked.set(maxIndex, true);
+
+			int vmSize = getVmList().size();
+			CondorVM firstIdleVm = null;// (CondorVM)getVmList().get(0);
+			for (int j = 0; j < vmSize; j++) {
+				CondorVM vm = (CondorVM) getVmList().get(j);
+				if (vm.getState() == WorkflowSimTags.VM_STATUS_IDLE) {
+					firstIdleVm = vm;
+					break;
+				}
+			}
+			if (firstIdleVm == null) {
+				break;
+			}
+			for (int j = 0; j < vmSize; j++) {
+				CondorVM vm = (CondorVM) getVmList().get(j);
+				if ((vm.getState() == WorkflowSimTags.VM_STATUS_IDLE)
+						&& vm.getCurrentRequestedTotalMips() > firstIdleVm.getCurrentRequestedTotalMips()) {
+					firstIdleVm = vm;
+
+				}
+			}
+			firstIdleVm.setState(WorkflowSimTags.VM_STATUS_BUSY);
+			maxCloudlet.setVmId(firstIdleVm.getId());
+			getScheduledList().add(maxCloudlet);
+			Log.printLine("Schedules " + maxCloudlet.getCloudletId() + " with " + maxCloudlet.getCloudletPriority()
+					+ " to VM " + firstIdleVm.getId() + " with " + firstIdleVm.getCurrentRequestedTotalMips());
+
+		}
+	}
 }
