@@ -45,6 +45,7 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 	}
 
 	private class Graph {
+		private double av=0.1,bv =2,cv=1;
 		private int V;
 
 		private LinkedList<Edge> adj[];
@@ -74,6 +75,19 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 			adj[v].add(edge);
 
 		}
+		void updateEdgeSoil(int v, int w, int wt) {
+			Edge edge = new Edge(w, wt);
+			int indexToRemove = 0;
+			for (int i = 0; i < adj[v].size(); i++) {
+				if (adj[v].get(i).dest == w) {
+					indexToRemove = adj[v].get(i).dest;
+				}
+			}
+			adj[v].remove(indexToRemove);
+			adj[v].add(edge);
+
+		}
+		
 
 		int getWeight(int v, int w) {
 			int wt = 0;
@@ -100,6 +114,15 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 					adj[i].get(j).weight = 1 + 2 * childs(j).size();
 				}
 			}
+		}
+		double updateVelocity(int i, int j ,double v) {
+			double av=0.1,bv =2,cv=1;
+			return v+ av/(bv+cv*(1+2*childs(j).size()));
+			
+		}
+		double computeDeltaSoil(int i,int j,double velocity) {
+			return av/(bv+cv*adj[i].get(j).weight/velocity);
+			
 		}
 
 		public ArrayList<Integer> childs(int v) {
