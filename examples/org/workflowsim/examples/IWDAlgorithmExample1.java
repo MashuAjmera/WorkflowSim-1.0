@@ -91,7 +91,7 @@ public class IWDAlgorithmExample1 {
 			/**
 			 * Should change this based on real physical path
 			 */
-			String daxPath = "config/dax/Montage_100.xml";
+			String daxPath = "config/dax/Montage_25.xml";
 
 			File daxFile = new File(daxPath);
 			if (!daxFile.exists()) {

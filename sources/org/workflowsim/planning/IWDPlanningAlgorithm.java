@@ -45,7 +45,7 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 	}
 
 	private class Graph {
-		private double av=0.1,bv =2,cv=1;
+		private double av = 0.1, bv = 2, cv = 1;
 		private int V;
 
 		private LinkedList<Edge> adj[];
@@ -75,6 +75,7 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 			adj[v].add(edge);
 
 		}
+
 		void updateEdgeSoil(int v, int w, int wt) {
 			Edge edge = new Edge(w, wt);
 			int indexToRemove = 0;
@@ -87,7 +88,6 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 			adj[v].add(edge);
 
 		}
-		
 
 		int getWeight(int v, int w) {
 			int wt = 0;
@@ -115,14 +115,16 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 				}
 			}
 		}
-		double updateVelocity(int i, int j ,double v) {
-			double av=0.1,bv =2,cv=1;
-			return v+ av/(bv+cv*(1+2*childs(j).size()));
-			
+
+		double updateVelocity(int i, int j, double v) {
+			double av = 0.1, bv = 2, cv = 1;
+			return v + av / (bv + cv * (1 + 2 * childs(j).size()));
+
 		}
-		double computeDeltaSoil(int i,int j,double velocity) {
-			return av/(bv+cv*adj[i].get(j).weight/velocity);
-			
+
+		double computeDeltaSoil(int i, int j, double velocity) {
+			return av / (bv + cv * adj[i].get(j).weight / velocity);
+
 		}
 
 		public ArrayList<Integer> childs(int v) {
@@ -258,46 +260,41 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 		m = g.childs(0);
 		int priority = lenght;
 		System.out.println(m);
-		while (m.size() > 1 && priority > 0) {
-			double count = 0;
+
+		int currNode = 0, nextNode = 0;
+
+		double as, bs, cs, P, probSum, vel = 100, soil = 0;
+		double probArr[], probArrN[], probArrS[] = new double[lenght];
+		while (lenght-- != 0) {
+
+			m = g.childs(currNode);
 			for (int j = 0; j < m.size(); j++) {
+				probArrN[j] = probArr[j] / probSum;
+				if (j > 0) {
+					probArrN[j] += probArr[j - 1];
+				}
 
-				int x = g.getWeight(0, m.get(j));
-				count = count + x;
-				// System.out.println("\nUsing ListIterator:\n" + x + "EYEE " + j);
+				if (g.childs(currNode).size() == 0) {
+					g.removeEdge(currNode);
 
+				}
 			}
-			System.out.println(count);
 			double x = Math.random();
-			double count2 = 0;
+
 			for (int j = 0; j < m.size(); j++) {
-				double prob = g.getWeight(0, m.get(j)) / count;
-				System.out.println(prob);
-				if (x >= count2 && x <= count2 + prob) {
-					System.out.println("YESssssssssss");
+				if (probArrS[j] >= x) {
+					nextNode = m.get(j);
+					g.updateVelocity(currNode, nextNode, vel);
 
-					Task t3 = gettask(m.get(j));
-					if (t3.getCloudletPriority() == 0) {
-						t3.setCloudletPriority(priority);
-
-						priority = priority - 1;
-						int r = m.get(j);
-						m = g.childs(r);
-
-						System.out.println(m.size());
-						for (int j1 = 0; j1 < m.size(); j1++) {
-							System.out.println("YES");
-
-							g.addEdge(0, m.get(j1), wt);
-
-						}
-						g.removeEdge(r);
-						break;
+					Task t4 = gettask(nextNode);
+					if (t4.getCloudletPriority() == 0) {
+						t4.setCloudletPriority(priority--);
 					}
-				} else
-					count2 = count2 + prob;
+					g.updateEdgeSoil(currNode, nextNode, g.getWeight(currNode, nextNode));
+
+				}
 			}
-			m = g.childs(0);
+			currNode = nextNode;
 
 		}
 
