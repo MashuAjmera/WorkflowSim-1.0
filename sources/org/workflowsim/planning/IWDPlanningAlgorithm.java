@@ -45,7 +45,7 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 	}
 
 	public static double av = 0.1, bv = 2, cv = 1, as = 1, bs = 0.01, cs = 1, tau = 1, lr = 0.9, delsoilmin = 10,
-			delsoilmax = 90;
+			delsoilmax = 90, es = 0.01;
 	int a = 2;
 
 	double updateIwdSoil(double soil, double delSoil) {
@@ -90,6 +90,14 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 
 		}
 
+		double g(int i, int j) {
+			return this.getWeight(i, j);
+		}
+
+		double fsoil(double a) {
+			return 1 / (es + a);
+		}
+
 		double probability(int child, int child2, Graph g) {
 			double rn = Math.random();
 			double fi = Math.random();
@@ -104,17 +112,17 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 				System.out.println("valur of c in probability fx hello " + c.getCloudletLength());
 
 				double we = (double) c.getCloudletLength();
-				count = count + g.getWeight(child, m.get(i));
+				count = count + fsoil(g(child, m.get(i)));
 
 			}
 			if (fi < 0.5) {
-				double t = g.getWeight(child, child2);
-				Cloudlet c = (Cloudlet) gettask(child);
+				double t = fsoil(g(child, child2));
+				Cloudlet c = (Cloudlet) gettask((child2));
 				double we = (double) c.getCloudletLength();
 				return t / count * (Math.pow(we, tau));
 			} else {
-				double t = g.getWeight(child, child2);
-				Cloudlet c = (Cloudlet) gettask(child);
+				double t = fsoil(g(child, child2));
+				Cloudlet c = (Cloudlet) gettask(child2);
 				double we = (double) c.getCloudletLength();
 
 				return Math.min(1.0, t / (count * (Math.pow(we, tau)) + rn));
@@ -319,7 +327,7 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 		g.setedgeweights();
 
 		ArrayList<Integer> m = new ArrayList<Integer>();
-//		m = g.childs(0);
+		// m = g.childs(0);
 		int priority = lenght;
 		System.out.println(m);
 
