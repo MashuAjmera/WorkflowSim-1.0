@@ -49,12 +49,6 @@ public class IWDSchedulingAlgorithm extends BaseSchedulingAlgorithm {
 
 		int[] priority = Cloudlet.getArray();
 
-//		for (int l = 0; l < priority.length; l++) {
-//			System.out.print(priority[l] + ", ");
-//		}
-//		System.out.println();
-
-		// Log.printLine("Schedulin Cycle");
 		int size = getCloudletList().size();
 		hasChecked.clear();
 		for (int t = 0; t < size; t++) {
@@ -65,10 +59,9 @@ public class IWDSchedulingAlgorithm extends BaseSchedulingAlgorithm {
 			Cloudlet maxCloudlet = null;
 			for (int j = 0; j < size; j++) {
 				Cloudlet cloudlet = (Cloudlet) getCloudletList().get(j);
-//				System.out.println(cloudlet.getCloudletId());
+
 				if (!hasChecked.get(j)) {
 					maxCloudlet = cloudlet;
-					int m = cloudlet.getCloudletId();
 
 					maxIndex = j;
 					break;
