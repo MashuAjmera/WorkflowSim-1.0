@@ -82,7 +82,8 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 			int indexToRemove = 0;
 			for (int i = 0; i < adj[v].size(); i++) {
 				if (adj[v].get(i).dest == w) {
-					indexToRemove = adj[v].get(i).dest;
+					indexToRemove = i;
+					break;
 				}
 			}
 			adj[v].remove(indexToRemove);
@@ -91,25 +92,41 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 		}
 
 		double g(int i, int j) {
-			return this.getWeight(i, j);
+			ArrayList<Integer> m = new ArrayList<Integer>();
+
+			m = this.childs(i);
+			double mini = this.getWeight(i, m.get(0));
+			for (int k = 0; k < m.size(); k++) {
+				if (mini > this.getWeight(i, m.get(k))) {
+					mini = this.getWeight(i, m.get(k));
+				}
+			}
+			if (mini >= 0) {
+//				System.out.println("HereHere +ve " + this.getWeight(i, j));
+				return this.getWeight(i, j);
+			} else {
+//				System.out.println("HEREHERE " + (this.getWeight(i, j) - mini));
+				return this.getWeight(i, j) - mini;
+			}
+
 		}
 
 		double fsoil(double a) {
 			return 1 / (es + a);
 		}
 
-		double probability(int child, int child2, Graph g) {
+		double probability(int child, int child2) {
 			double rn = Math.random();
 			double fi = Math.random();
 			ArrayList<Integer> m = new ArrayList<Integer>();
-			System.out.println("valur of child in probability fx " + child);
-			m = g.childs(child);
-			System.out.println("valur of m in probability fx " + m);
+//			System.out.println("valur of child in probability fx " + child);
+			m = this.childs(child);
+//			System.out.println("valur of m in probability fx " + m);
 			double count = 0;
 			for (int i = 0; i < m.size(); i++) {
 				Cloudlet c;
 				c = (Cloudlet) gettask(m.get(i));
-				System.out.println("valur of c in probability fx hello " + c.getCloudletLength());
+//				System.out.println("valur of c in probability fx hello " + c.getCloudletLength());
 
 				double we = (double) c.getCloudletLength();
 				count = count + fsoil(g(child, m.get(i)));
@@ -119,7 +136,7 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 				double t = fsoil(g(child, child2));
 				Cloudlet c = (Cloudlet) gettask((child2));
 				double we = (double) c.getCloudletLength();
-				return t / count * (Math.pow(we, tau));
+				return t / (count * Math.pow(we, tau));
 			} else {
 				double t = fsoil(g(child, child2));
 				Cloudlet c = (Cloudlet) gettask(child2);
@@ -127,19 +144,6 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 
 				return Math.min(1.0, t / (count * (Math.pow(we, tau)) + rn));
 			}
-		}
-
-		void updateEdgeSoil(int v, int w, double wt) {
-			Edge edge = new Edge(w, wt);
-			int indexToRemove = 0;
-			for (int i = 0; i < adj[v].size(); i++) {
-				if (adj[v].get(i).dest == w) {
-					indexToRemove = adj[v].get(i).dest;
-				}
-			}
-			adj[v].remove(indexToRemove);
-			adj[v].add(edge);
-
 		}
 
 		double updateSoil(int i, int j, double VEL) {
@@ -159,9 +163,11 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 
 		}
 
-		double getWeight(int v, double w) {
+		double getWeight(int v, int w) {
 			double wt = 0;
+
 			for (int i = 0; i < adj[v].size(); i++) {
+//				System.out.println("HERE v " + v + " HWEW w " + w);
 				if (adj[v].get(i).dest == w) {
 					wt = adj[v].get(i).weight;
 					break;
@@ -187,11 +193,12 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 		}
 
 		double updateVelocity(int i, int j, double v) {
-			return v + av / (bv + cv * (1 + a * childs(j).size()));
+			return v + av / (bv + cv * this.getWeight(i, j) * this.getWeight(i, j));
 		}
 
 		double computeDeltaSoil(int i, int j, double velocity) {
-			return as / (bs + cs * adj[i].get(j).weight / velocity);
+
+			return as / (bs + cs * this.getWeight(i, j) / velocity);
 
 		}
 
@@ -276,7 +283,7 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 	}
 
 	public Task gettask(int a) {
-		System.out.println("Gettask input " + a);
+//		System.out.println("Gettask input " + a);
 		Task returnTask = null;
 		for (Task parent : getTaskList()) {
 
@@ -297,9 +304,9 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 
 	private void calculateBestPath() {
 
-		int t, lenght;
+		int t, length;
 		t = getTaskList().size();
-		lenght = t;
+		length = t;
 		int wt = 1;
 		Graph g = new Graph(t + 1);
 		for (Task parent : getTaskList()) {
@@ -319,38 +326,69 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 			}
 		}
 
-		g.printWeight(g);
-
 		ArrayList<Integer> best_path = new ArrayList<Integer>();
 		best_path.add(0);
 
 		g.setedgeweights();
+		g.printWeight(g);
 
-		ArrayList<Integer> m = new ArrayList<Integer>();
+		System.out.println("Child of 16 " + g.childs(16));
+
+//		System.out.println("Weight,4,14" + g.getWeight(3, 14));
+
 		// m = g.childs(0);
-		int priority = lenght;
-		System.out.println(m);
+		int priority = length;
 
 		int currNode = 0, nextNode = 0;
 
-		while (lenght-- != 0) {
+		while (--length != 0) {
 			double vel = 100, soil = 0;
+			ArrayList<Integer> m = new ArrayList<Integer>();
 
 			m = g.childs(currNode);
+			System.out.println("value of m in forst loop" + m.size());
+
 			if (g.childs(currNode).size() == 0) {
+				System.out.println("currNode " + currNode);
 				g.removeEdge(currNode);
-				break;
+				currNode = 0;
+				nextNode = 0;
 			} else {
-				double probArrN[] = new double[m.size()];
+				double probArr[] = new double[m.size()], probArrN[] = new double[m.size()];
+				double probSum = 0;
 				for (int j = 0; j < m.size(); j++) {
-					probArrN[j] = g.probability(currNode, m.get(j), g);
+					probArr[j] = g.probability(currNode, m.get(j));
+					probSum += probArr[j];
 
 				}
+				for (int j = 0; j < m.size(); j++) {
+					probArr[j] = probArr[j] / probSum;
+
+				}
+				probArrN[0] = probArr[0];
+				for (int j = 1; j < m.size(); j++) {
+//					probArr[j] = probArr[j] / probSum;
+					probArrN[j] = probArrN[j - 1] + probArr[j];
+
+				}
+
+				for (int j = 0; j < m.size(); j++) {
+					System.out.print(probArr[j] + " ");
+
+				}
+				System.out.println();
+				for (int j = 0; j < m.size(); j++) {
+					System.out.print(probArrN[j] + " ");
+
+				}
+				System.out.println();
 				double x = Math.random();
 
 				for (int j = 0; j < m.size(); j++) {
+					System.out.println("random in x " + x + " calculated prob arr of j " + probArrN[j]);
 					if (probArrN[j] >= x) {
 						nextNode = m.get(j);
+						System.out.println("currNode " + currNode + " nextNode " + nextNode + " j " + j);
 						g.updateVelocity(currNode, nextNode, vel);
 
 						Task t4 = gettask(nextNode);
@@ -363,16 +401,17 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 						break;
 
 					}
+
 				}
+				currNode = nextNode;
 			}
-			currNode = nextNode;
 
 		}
 
 		List<Task> tlist = new ArrayList<Task>();
 		tlist = getTaskList();
-		int[] arr = new int[lenght + 1];
-		// System.out.println("LENGTHHH" + lenght);
+		int[] arr = new int[length + 1];
+		// System.out.println("LENGTHHH" + length);
 		arr[0] = 0;
 		for (int i = 0; i < tlist.size(); i++) {
 			System.out.println(
