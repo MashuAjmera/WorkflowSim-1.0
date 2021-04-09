@@ -44,9 +44,14 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 		}
 	}
 
+//	public static double av = 0.1, bv = 1.5, cv = 0.8, as = 1.1, bs = 0.01, cs = 1, tau = 1, lr = 0.9, delsoilmin = 10,
+//			delsoilmax = 90, es = 0.01, a = 2;
+//	public static double av = 0.1, bv = 1, cv = 0.5, as = 1.3, bs = 0.01, cs = 1, tau = 1, lr = 0.9, delsoilmin = 10,
+//			delsoilmax = 90, es = 0.01, a = 2;
+
+//	MAIN
 	public static double av = 0.1, bv = 2, cv = 1, as = 1, bs = 0.01, cs = 1, tau = 1, lr = 0.9, delsoilmin = 10,
-			delsoilmax = 90, es = 0.01;
-	int a = 2;
+			delsoilmax = 90, es = 0.01, a = 2;
 
 	double updateIwdSoil(double soil, double delSoil) {
 		if (delSoil < delsoilmin) {
@@ -128,19 +133,18 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 				c = (Cloudlet) gettask(m.get(i));
 //				System.out.println("valur of c in probability fx hello " + c.getCloudletLength());
 
-				double we = (double) c.getCloudletLength();
 				count = count + fsoil(g(child, m.get(i)));
 
 			}
 			if (fi < 0.5) {
 				double t = fsoil(g(child, child2));
 				Cloudlet c = (Cloudlet) gettask((child2));
-				double we = (double) c.getCloudletLength();
+				double we = (double) c.getCloudletLength() / 1000;
 				return t / (count * Math.pow(we, tau));
 			} else {
 				double t = fsoil(g(child, child2));
 				Cloudlet c = (Cloudlet) gettask(child2);
-				double we = (double) c.getCloudletLength();
+				double we = (double) c.getCloudletLength() / 1000;
 
 				return Math.min(1.0, t / (count * (Math.pow(we, tau)) + rn));
 			}
@@ -330,9 +334,9 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 		best_path.add(0);
 
 		g.setedgeweights();
-		g.printWeight(g);
+//		g.printWeight(g);
 
-		System.out.println("Child of 16 " + g.childs(16));
+//		System.out.println("Child of 16 " + g.childs(16));
 
 //		System.out.println("Weight,4,14" + g.getWeight(3, 14));
 
@@ -341,16 +345,21 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 
 		int currNode = 0, nextNode = 0;
 
-		while (--length != 0) {
+		while (length != 0) {
 			double vel = 100, soil = 0;
 			ArrayList<Integer> m = new ArrayList<Integer>();
 
 			m = g.childs(currNode);
-			System.out.println("value of m in forst loop" + m.size());
+//			System.out.println("value of m in forst loop" + m.size());
 
 			if (g.childs(currNode).size() == 0) {
-				System.out.println("currNode " + currNode);
+//				System.out.println("currNode " + currNode);
+				Task t5 = gettask(currNode);
+				if (t5.getCloudletPriority() == 0) {
+					t5.setCloudletPriority(priority--);
+				}
 				g.removeEdge(currNode);
+				length--;
 				currNode = 0;
 				nextNode = 0;
 			} else {
@@ -372,20 +381,10 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 
 				}
 
-				for (int j = 0; j < m.size(); j++) {
-					System.out.print(probArr[j] + " ");
-
-				}
-				System.out.println();
-				for (int j = 0; j < m.size(); j++) {
-					System.out.print(probArrN[j] + " ");
-
-				}
-				System.out.println();
 				double x = Math.random();
 
 				for (int j = 0; j < m.size(); j++) {
-					System.out.println("random in x " + x + " calculated prob arr of j " + probArrN[j]);
+
 					if (probArrN[j] >= x) {
 						nextNode = m.get(j);
 						System.out.println("currNode " + currNode + " nextNode " + nextNode + " j " + j);
@@ -397,30 +396,28 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 						}
 						double delSoil = g.updateSoil(currNode, nextNode, vel);
 						soil = updateIwdSoil(soil, delSoil);
-
 						break;
-
 					}
 
 				}
 				currNode = nextNode;
+
 			}
 
 		}
 
 		List<Task> tlist = new ArrayList<Task>();
 		tlist = getTaskList();
-		int[] arr = new int[length + 1];
+		int[] arr = new int[getTaskList().size() + 1];
 		// System.out.println("LENGTHHH" + length);
 		arr[0] = 0;
 		for (int i = 0; i < tlist.size(); i++) {
 			System.out.println(
 					"Task ID " + tlist.get(i).getCloudletId() + " Task Priority " + tlist.get(i).getCloudletPriority());
-			arr[i + 1] = tlist.get(i).getCloudletPriority();
+			arr[i] = tlist.get(i).getCloudletPriority();
 		}
-		arr[0] = 0;
 
-		System.out.println();
+//		System.out.println();
 		Cloudlet.setArray(arr);
 
 	}

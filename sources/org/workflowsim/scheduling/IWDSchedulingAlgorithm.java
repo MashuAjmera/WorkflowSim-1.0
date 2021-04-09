@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.cloudbus.cloudsim.Cloudlet;
-import org.cloudbus.cloudsim.Log;
 import org.workflowsim.CondorVM;
 import org.workflowsim.WorkflowSimTags;
 
@@ -48,7 +47,6 @@ public class IWDSchedulingAlgorithm extends BaseSchedulingAlgorithm {
 	@Override
 	public void run() {
 
-		
 		int[] priority = Cloudlet.getArray();
 
 //		for (int l = 0; l < priority.length; l++) {
@@ -67,7 +65,7 @@ public class IWDSchedulingAlgorithm extends BaseSchedulingAlgorithm {
 			Cloudlet maxCloudlet = null;
 			for (int j = 0; j < size; j++) {
 				Cloudlet cloudlet = (Cloudlet) getCloudletList().get(j);
-				System.out.println(cloudlet.getCloudletId());
+//				System.out.println(cloudlet.getCloudletId());
 				if (!hasChecked.get(j)) {
 					maxCloudlet = cloudlet;
 					int m = cloudlet.getCloudletId();
