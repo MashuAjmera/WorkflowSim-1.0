@@ -44,13 +44,13 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 	}
 //
 //	public static double av = 0.1, bv = 1.5, cv = 0.8, as = 1.1, bs = 0.01, cs = 1, tau = 1, fizero = 0, lr = 0.9,
-//			delsoilmin = 10, delsoilmax = 90, es = 0.01, ev = 0.0001, a = 2;
+//			delsoilmin = 10, delsoilmax = 90, es = 0.01, ev = 0.0001, a = 2,b=1;
 //	public static double av = 0.1, bv = 1, cv = 0.5, as = 1.3, bs = 0.01, cs = 1, tau = 1, lr = 0.9, delsoilmin = 10,
-//			delsoilmax = 90, es = 0.01,ev = 0.0001, a = 2;
+//			delsoilmax = 90, es = 0.01,ev = 0.0001, a = 2,b=1;
 
 //	MAIN
-	public static double av = 1, bv = 0.01, cv = 1, as = 1, bs = 0.01, cs = 1, tau = 1, fizero = 0.5, lr = 0.9,
-			delsoilmin = 10, delsoilmax = 90, es = 0.01, ev = 0.0001, a = 2;
+	public static double av = 1, bv = 0.01, cv = 1, as = 1, bs = 0.01, cs = 1, tau = 1, fizero = 0, lr = 0.9,
+			delsoilmin = 10, delsoilmax = 90, es = 0.01, ev = 0.0001, a = 2, b=1;
 
 	double updateIwdSoil(double soil, double delSoil) {
 		if (delSoil < delsoilmin) {
@@ -179,7 +179,7 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 		public void setedgeweights() {
 			for (int i = 0; i < V; i++) {
 				for (int j = 0; j < adj[i].size(); j++) {
-					adj[i].get(j).weight = 1 + a * childs(j).size();
+					adj[i].get(j).weight = b + a * childs(j).size();
 				}
 			}
 		}
@@ -280,9 +280,15 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 			} else {
 				double probArr[] = new double[m.size()], probArrN[] = new double[m.size()];
 				double probSum = 0;
+				double highestValue=-100;
+				int highestIndex=-1;
 				for (int j = 0; j < m.size(); j++) {
 					probArr[j] = g.probability(currNode, m.get(j));
 					probSum += probArr[j];
+					if(probArr[j]>highestValue) {
+						highestValue=probArr[j];
+						highestIndex=j;
+					}
 
 				}
 				for (int j = 0; j < m.size(); j++) {
@@ -296,13 +302,12 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 
 				}
 
-				double x = Math.random();
+//				double x = Math.random();
 
-				for (int j = 0; j < m.size(); j++) {
+//				for (int j = 0; j < m.size(); j++) {
 
-					if (probArrN[j] >= x) {
-						nextNode = m.get(j);
-//						System.out.println("currNode " + currNode + " nextNode " + nextNode + " j " + j);
+//					if (probArrN[j] >= x) {
+						nextNode = m.get(highestIndex);
 						g.updateVelocity(currNode, nextNode, vel);
 
 						Task t4 = gettask(nextNode);
@@ -311,10 +316,10 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 						}
 						double delSoil = g.updateSoil(currNode, nextNode, vel);
 						soil = updateIwdSoil(soil, delSoil);
-						break;
-					}
+//						break;
+//					}
 
-				}
+//				}
 				currNode = nextNode;
 
 			}
