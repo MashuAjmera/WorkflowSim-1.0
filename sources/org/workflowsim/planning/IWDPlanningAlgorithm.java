@@ -42,15 +42,16 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 			this.dest = dest;
 		}
 	}
-//
-//	public static double av = 0.1, bv = 1.5, cv = 0.8, as = 1.1, bs = 0.01, cs = 1, tau = 1, fizero = 0, lr = 0.9,
-//			delsoilmin = 10, delsoilmax = 90, es = 0.01, ev = 0.0001, a = 2,b=1;
+
+//	main 2
+	public static double av = 0.1, bv = 1.5, cv = 80, as = 1, bs = 0.1, cs = 1, tau = 0.9, lr = 0.5, delsoilmin = 10,
+			delsoilmax = 90, es = 0.01, ev = 0.0001, a = 20, b = 100;
 //	public static double av = 0.1, bv = 1, cv = 0.5, as = 1.3, bs = 0.01, cs = 1, tau = 1, lr = 0.9, delsoilmin = 10,
 //			delsoilmax = 90, es = 0.01,ev = 0.0001, a = 2,b=1;
 
 //	MAIN
-	public static double av = 1, bv = 0.01, cv = 1, as = 1, bs = 0.01, cs = 1, tau = 1, fizero = 0, lr = 0.9,
-			delsoilmin = 10, delsoilmax = 90, es = 0.01, ev = 0.0001, a = 2, b=1;
+//	public static double av = 1, bv = 0.01, cv = 1, as = 1, bs = 0.01, cs = 1, tau = 1, lr = 0.9,
+//			delsoilmin = 10, delsoilmax = 90, es = 0.01, ev = 0.0001, a = 2, b = 1;
 
 	double updateIwdSoil(double soil, double delSoil) {
 		if (delSoil < delsoilmin) {
@@ -120,30 +121,12 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 		}
 
 		double probability(int child, int child2) {
-			double rn = Math.random();
-			double fi = Math.random();
-			ArrayList<Integer> m = new ArrayList<Integer>();
 
-			m = this.childs(child);
+			double t = fsoil(g(child, child2));
+			Cloudlet c = (Cloudlet) gettask((child2));
+			double we = (double) c.getCloudletLength() / 1000;
+			return t / Math.pow(we, tau);
 
-			double count = 0;
-			for (int i = 0; i < m.size(); i++) {
-
-				count = count + fsoil(g(child, m.get(i)));
-
-			}
-			if (fi > fizero) {
-				double t = fsoil(g(child, child2));
-				Cloudlet c = (Cloudlet) gettask((child2));
-				double we = (double) c.getCloudletLength() / 1000;
-				return t / (count * Math.pow(we, tau));
-			} else {
-				double t = fsoil(g(child, child2));
-				Cloudlet c = (Cloudlet) gettask(child2);
-				double we = (double) c.getCloudletLength() / 1000;
-
-				return Math.min(1.0, t / (count * (Math.pow(we, tau)) + rn));
-			}
 		}
 
 		double updateSoil(int i, int j, double VEL) {
@@ -280,46 +263,28 @@ public class IWDPlanningAlgorithm extends BasePlanningAlgorithm {
 			} else {
 				double probArr[] = new double[m.size()], probArrN[] = new double[m.size()];
 				double probSum = 0;
-				double highestValue=-100;
-				int highestIndex=-1;
+				double highestValue = -100;
+				int highestIndex = -1;
 				for (int j = 0; j < m.size(); j++) {
 					probArr[j] = g.probability(currNode, m.get(j));
 					probSum += probArr[j];
-					if(probArr[j]>highestValue) {
-						highestValue=probArr[j];
-						highestIndex=j;
+					if (probArr[j] > highestValue) {
+						highestValue = probArr[j];
+						highestIndex = j;
 					}
 
 				}
-				for (int j = 0; j < m.size(); j++) {
-					probArr[j] = probArr[j] / probSum;
 
+				nextNode = m.get(highestIndex);
+				g.updateVelocity(currNode, nextNode, vel);
+
+				Task t4 = gettask(nextNode);
+				if (t4.getCloudletPriority() == 0) {
+					t4.setCloudletPriority(priority--);
 				}
-				probArrN[0] = probArr[0];
-				for (int j = 1; j < m.size(); j++) {
+				double delSoil = g.updateSoil(currNode, nextNode, vel);
+				soil = updateIwdSoil(soil, delSoil);
 
-					probArrN[j] = probArrN[j - 1] + probArr[j];
-
-				}
-
-//				double x = Math.random();
-
-//				for (int j = 0; j < m.size(); j++) {
-
-//					if (probArrN[j] >= x) {
-						nextNode = m.get(highestIndex);
-						g.updateVelocity(currNode, nextNode, vel);
-
-						Task t4 = gettask(nextNode);
-						if (t4.getCloudletPriority() == 0) {
-							t4.setCloudletPriority(priority--);
-						}
-						double delSoil = g.updateSoil(currNode, nextNode, vel);
-						soil = updateIwdSoil(soil, delSoil);
-//						break;
-//					}
-
-//				}
 				currNode = nextNode;
 
 			}

@@ -91,7 +91,7 @@ public class IWDAlgorithmExample1 {
 			/**
 			 * Should change this based on real physical path
 			 */
-			String daxPath = "config/dax/CyberShake_30.xml";
+			String daxPath = "config/dax/CyberShake_50.xml";
 
 			File daxFile = new File(daxPath);
 			if (!daxFile.exists()) {
