@@ -91,7 +91,7 @@ public class IWDAlgorithmExample1 {
 			/**
 			 * Should change this based on real physical path
 			 */
-			String daxPath = "config/dax/Montage_25.xml";
+			String daxPath = "config/dax/CyberShake_50.xml";
 
 			File daxFile = new File(daxPath);
 			if (!daxFile.exists()) {
@@ -104,9 +104,9 @@ public class IWDAlgorithmExample1 {
 			 * be static such that the scheduler would not override the result of the
 			 * planner
 			 */
-
-			Parameters.PlanningAlgorithm pln_method = Parameters.PlanningAlgorithm.IWD;
 			Parameters.SchedulingAlgorithm sch_method = Parameters.SchedulingAlgorithm.IWD;
+			Parameters.PlanningAlgorithm pln_method = Parameters.PlanningAlgorithm.IWD;
+
 			ReplicaCatalog.FileSystem file_system = ReplicaCatalog.FileSystem.LOCAL;
 
 			/**

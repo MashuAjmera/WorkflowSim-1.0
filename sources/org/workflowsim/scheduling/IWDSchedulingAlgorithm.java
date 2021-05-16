@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.cloudbus.cloudsim.Cloudlet;
-import org.cloudbus.cloudsim.Log;
 import org.workflowsim.CondorVM;
 import org.workflowsim.WorkflowSimTags;
 
@@ -50,12 +49,6 @@ public class IWDSchedulingAlgorithm extends BaseSchedulingAlgorithm {
 
 		int[] priority = Cloudlet.getArray();
 
-//		for (int l = 0; l < priority.length; l++) {
-//			System.out.print(priority[l] + ", ");
-//		}
-//		System.out.println();
-
-		// Log.printLine("Schedulin Cycle");
 		int size = getCloudletList().size();
 		hasChecked.clear();
 		for (int t = 0; t < size; t++) {
@@ -66,12 +59,9 @@ public class IWDSchedulingAlgorithm extends BaseSchedulingAlgorithm {
 			Cloudlet maxCloudlet = null;
 			for (int j = 0; j < size; j++) {
 				Cloudlet cloudlet = (Cloudlet) getCloudletList().get(j);
-				System.out.println(cloudlet.getCloudletId());
+
 				if (!hasChecked.get(j)) {
 					maxCloudlet = cloudlet;
-					int m = cloudlet.getCloudletId();
-					System.out.println("Hello " + m);
-					System.out.println("MaxUntilHere " + priority[m]);
 
 					maxIndex = j;
 					break;
@@ -118,8 +108,6 @@ public class IWDSchedulingAlgorithm extends BaseSchedulingAlgorithm {
 			firstIdleVm.setState(WorkflowSimTags.VM_STATUS_BUSY);
 			maxCloudlet.setVmId(firstIdleVm.getId());
 			getScheduledList().add(maxCloudlet);
-			Log.printLine("Schedules " + maxCloudlet.getCloudletId() + " with " + maxCloudlet.getCloudletPriority()
-					+ " to VM " + firstIdleVm.getId() + " with " + firstIdleVm.getCurrentRequestedTotalMips());
 
 		}
 	}
